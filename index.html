@@ -25,18 +25,18 @@
     <style>
         /* ─── ROOT VARIABLES ─── */
         :root {
-            --bg:          #080b0e;
-            --surface:     #0e1318;
-            --surface2:    #131a22;
-            --border:      #1c2530;
-            --border-soft: #151e27;
-            --text:        #dcd6ca;
-            --text-muted:  #64748b;
-            --text-faint:  #334155;
-            --gold:        #c8a84b;
+            --bg:          #0c1524;
+            --surface:     #111e33;
+            --surface2:    #162039;
+            --border:      #1e3257;
+            --border-soft: #182a48;
+            --text:        #e2ddd4;
+            --text-muted:  #7090b8;
+            --text-faint:  #2e4a6e;
+            --gold:        #d4aa4e;
             --gold-dim:    #8a7030;
             --crimson:     #9b1c2e;
-            --crimson-light: #b72236;
+            --crimson-light: #c0293f;
             --green:       #3d6b52;
         }
 
@@ -465,6 +465,9 @@
             position: relative;
             overflow: hidden;
             transition: border-color 0.3s, transform 0.25s;
+            display: block;
+            color: inherit;
+            text-decoration: none;
         }
 
         .book-card::after {
@@ -530,6 +533,23 @@
 
         .book-status.current .dot { background: #4ade80; }
         .book-status.current { color: #4ade80; }
+
+        .book-link-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.58rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--gold);
+            border: 1px solid var(--gold-dim);
+            padding: 0.15rem 0.45rem;
+            opacity: 0;
+            transition: opacity 0.25s;
+        }
+
+        .book-card:hover .book-link-badge { opacity: 1; }
 
         /* ─── EXERCISES ─── */
         .ex-list {
@@ -1016,12 +1036,13 @@
 
     <div class="books-grid reveal-stagger">
 
-        <div class="book-card">
+        <a class="book-card" href="https://docs.google.com/viewer?url=https%3A%2F%2Fraw.githubusercontent.com%2FCarlFriedrichGauss1%2FFightClub%2Fmain%2FFiulton-Algebraic%2520Curves.pdf" target="_blank" rel="noopener">
+            <span class="book-link-badge">↗ PDF</span>
             <div class="book-cat">Primary Text · Algebraic Geometry</div>
             <div class="book-title">Algebraic Curves</div>
             <div class="book-author">William Fulton</div>
             <div class="book-status current"><span class="dot"></span> Currently Reading</div>
-        </div>
+        </a>
 
         <div class="book-card">
             <div class="book-cat">Commutative Algebra</div>

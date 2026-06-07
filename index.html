@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fight Club — NKUA Mathematics</title>
+    <meta name="description" content="An underground mathematics seminar at NKUA. Algebraic Geometry, Commutative Algebra, K-Theory, and more.">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <!-- MathJax -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['\\(', '\\)'], ['$', '$']],
+                displayMath: [['\\[', '\\]'], ['$$', '$$']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+    <style>
+        /* ─── ROOT VARIABLES ─── */
+        :root {
+            --bg:          #080b0e;
+            --surface:     #0e1318;
+            --surface2:    #131a22;
+            --border:      #1c2530;
+            --border-soft: #151e27;
+            --text:        #dcd6ca;
+            --text-muted:  #64748b;
+            --text-faint:  #334155;
+            --gold:        #c8a84b;
+            --gold-dim:    #8a7030;
+            --crimson:     #9b1c2e;
+            --crimson-light: #b72236;
+            --green:       #3d6b52;
+        }
+
+        /* ─── RESET & BASE ─── */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; font-size: 17px; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'EB Garamond', Georgia, serif;
+            line-height: 1.75;
+            overflow-x: hidden;
+        }
+
+        a { color: inherit; text-decoration: none; }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82em;
+            color: var(--gold);
+            background: var(--surface);
+            padding: 0.1em 0.4em;
+            border-radius: 2px;
+        }
+
+        /* ─── SCROLLBAR ─── */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+        /* ─── NAVIGATION ─── */
+        nav {
+            position: fixed;
+            inset: 0 0 auto 0;
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.1rem 3.5rem;
+            background: rgba(8, 11, 14, 0.88);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border-soft);
+        }
+
+        .nav-brand {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--gold);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.68rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover { color: var(--text); }
+
+        .nav-menu-btn {
+            display: none;
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 0.4rem 0.7rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            cursor: pointer;
+        }
+
+        /* ─── HERO ─── */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            padding: 9rem 3.5rem 5rem;
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 70% 55% at 65% 35%, rgba(155, 28, 46, 0.09) 0%, transparent 65%),
+                radial-gradient(ellipse 50% 70% at 25% 65%, rgba(200, 168, 75, 0.05) 0%, transparent 65%),
+                radial-gradient(ellipse 40% 40% at 80% 75%, rgba(30, 37, 48, 0.5) 0%, transparent 70%);
+        }
+
+        .hero-grid {
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(var(--border-soft) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border-soft) 1px, transparent 1px);
+            background-size: 64px 64px;
+            mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 80%);
+            opacity: 0.6;
+        }
+
+        /* Decorative math symbols */
+        .hero-deco {
+            position: absolute;
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            pointer-events: none;
+            user-select: none;
+            color: var(--text);
+            opacity: 0.025;
+            animation: float 12s ease-in-out infinite;
+        }
+        .hero-deco.d1 { top: 18%; left:  6%; font-size: 8rem; animation-delay: 0s; }
+        .hero-deco.d2 { bottom: 22%; right: 7%; font-size: 10rem; animation-delay: -4s; }
+        .hero-deco.d3 { top: 55%; left:  2%; font-size: 5rem; animation-delay: -8s; }
+        .hero-deco.d4 { top: 20%; right: 12%; font-size: 6rem; animation-delay: -2s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-14px); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 860px;
+        }
+
+        .hero-eyebrow {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 2.5rem;
+            opacity: 0;
+            animation: riseIn 0.9s cubic-bezier(0.25, 1, 0.5, 1) forwards 0.15s;
+        }
+
+        .hero-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 700;
+            font-size: clamp(5rem, 12vw, 10.5rem);
+            line-height: 0.88;
+            letter-spacing: -0.03em;
+            margin-bottom: 2.5rem;
+            opacity: 0;
+            animation: riseIn 0.9s cubic-bezier(0.25, 1, 0.5, 1) forwards 0.3s;
+        }
+
+        .hero-title .fight {
+            display: block;
+            color: var(--crimson-light);
+            font-style: italic;
+        }
+
+        .hero-title .club {
+            display: block;
+            color: var(--text);
+        }
+
+        .hero-tagline {
+            font-size: 1.2rem;
+            font-style: italic;
+            color: var(--text-muted);
+            max-width: 500px;
+            margin: 0 auto 3rem;
+            opacity: 0;
+            animation: riseIn 0.9s cubic-bezier(0.25, 1, 0.5, 1) forwards 0.5s;
+        }
+
+        .hero-pills {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            opacity: 0;
+            animation: riseIn 0.9s cubic-bezier(0.25, 1, 0.5, 1) forwards 0.7s;
+        }
+
+        .pill {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+            padding: 0.3rem 0.85rem;
+        }
+
+        .scroll-hint {
+            position: absolute;
+            bottom: 2.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.4rem;
+            opacity: 0;
+            animation: riseIn 1s ease forwards 1.2s;
+        }
+
+        .scroll-hint span {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-faint);
+        }
+
+        .scroll-line {
+            width: 1px;
+            height: 40px;
+            background: linear-gradient(to bottom, var(--border), transparent);
+            animation: scrollPulse 1.8s ease infinite;
+        }
+
+        @keyframes scrollPulse {
+            0%, 100% { opacity: 0.4; transform: scaleY(1); }
+            50% { opacity: 1; transform: scaleY(1.2); }
+        }
+
+        @keyframes riseIn {
+            from { opacity: 0; transform: translateY(22px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ─── SECTION LAYOUT ─── */
+        .section-wrap {
+            border-top: 1px solid var(--border);
+        }
+
+        section {
+            padding: 6rem 3.5rem;
+            max-width: 1140px;
+            margin: 0 auto;
+        }
+
+        .section-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.68rem;
+            letter-spacing: 0.28em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .section-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+            max-width: 64px;
+        }
+
+        .section-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2rem, 4.5vw, 3.4rem);
+            font-weight: 600;
+            line-height: 1.05;
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.01em;
+        }
+
+        .section-intro {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            max-width: 640px;
+            margin-bottom: 3.5rem;
+        }
+
+        /* ─── ABOUT ─── */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 5rem;
+            align-items: start;
+        }
+
+        .about-text p {
+            color: var(--text-muted);
+            margin-bottom: 1.1rem;
+            font-size: 1.05rem;
+        }
+
+        .about-text p:first-child {
+            color: var(--text);
+            font-size: 1.15rem;
+            font-style: italic;
+        }
+
+        .about-text .rule {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+            font-style: italic;
+            color: var(--text-muted);
+            border-left: 2px solid var(--crimson);
+            padding-left: 1.1rem;
+            margin: 1.5rem 0;
+        }
+
+        .topics-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .topics-list li {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 0.97rem;
+            color: var(--text-muted);
+            padding: 0.9rem 1rem;
+            border-bottom: 1px solid var(--border-soft);
+            transition: color 0.2s, padding-left 0.2s;
+            cursor: default;
+        }
+
+        .topics-list li:first-child { border-top: 1px solid var(--border-soft); }
+
+        .topics-list li:hover {
+            color: var(--text);
+            padding-left: 1.4rem;
+        }
+
+        .topic-sym {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-size: 1.2rem;
+            color: var(--gold);
+            width: 1.4rem;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        /* ─── ANNOUNCEMENTS ─── */
+        .ann-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .ann-item {
+            display: grid;
+            grid-template-columns: 100px 1fr auto;
+            gap: 2.5rem;
+            align-items: start;
+            padding: 2rem 0;
+            border-bottom: 1px solid var(--border-soft);
+            transition: background 0.2s;
+        }
+
+        .ann-item:first-child { border-top: 1px solid var(--border-soft); }
+
+        .ann-item:hover { background: rgba(200, 168, 75, 0.02); }
+
+        .ann-date {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            letter-spacing: 0.06em;
+            padding-top: 0.3rem;
+            line-height: 1.4;
+        }
+
+        .ann-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.35rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 0.45rem;
+        }
+
+        .ann-body {
+            color: var(--text-muted);
+            font-size: 0.97rem;
+        }
+
+        .ann-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            padding: 0.22rem 0.6rem;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            align-self: start;
+            flex-shrink: 0;
+        }
+
+        .ann-badge.new {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        /* ─── BOOKS ─── */
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(256px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .book-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 1.6rem;
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.3s, transform 0.25s;
+        }
+
+        .book-card::after {
+            content: '';
+            position: absolute;
+            inset: 0 auto 0 0;
+            width: 2px;
+            background: var(--gold);
+            transform: scaleY(0);
+            transform-origin: bottom;
+            transition: transform 0.35s ease;
+        }
+
+        .book-card:hover {
+            border-color: rgba(200, 168, 75, 0.35);
+            transform: translateY(-3px);
+        }
+
+        .book-card:hover::after { transform: scaleY(1); }
+
+        .book-cat {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.62rem;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 0.85rem;
+        }
+
+        .book-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            font-style: italic;
+            color: var(--text);
+            line-height: 1.3;
+            margin-bottom: 0.35rem;
+        }
+
+        .book-author {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .book-status {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-faint);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .book-status .dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: var(--text-faint);
+            flex-shrink: 0;
+        }
+
+        .book-status.current .dot { background: #4ade80; }
+        .book-status.current { color: #4ade80; }
+
+        /* ─── EXERCISES ─── */
+        .ex-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .ex-item {
+            display: grid;
+            grid-template-columns: 64px 1fr 32px;
+            gap: 1.5rem;
+            align-items: center;
+            padding: 1.5rem 1rem;
+            border-bottom: 1px solid var(--border-soft);
+            background: transparent;
+            transition: background 0.2s, padding-left 0.2s;
+            cursor: pointer;
+            color: var(--text);
+            text-decoration: none;
+        }
+
+        .ex-item:first-child { border-top: 1px solid var(--border-soft); }
+
+        .ex-item:hover {
+            background: rgba(200, 168, 75, 0.02);
+            padding-left: 1.4rem;
+        }
+
+        .ex-num {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.2rem;
+            font-weight: 300;
+            color: var(--border);
+            line-height: 1;
+            transition: color 0.2s;
+        }
+
+        .ex-item:hover .ex-num { color: var(--gold-dim); }
+
+        .ex-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 0.25rem;
+        }
+
+        .ex-meta {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.62rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .ex-arrow {
+            color: var(--gold);
+            font-size: 1.1rem;
+            opacity: 0;
+            transform: translateX(-5px);
+            transition: opacity 0.2s, transform 0.2s;
+        }
+
+        .ex-item:hover .ex-arrow { opacity: 1; transform: translateX(0); }
+
+        /* ─── ZULIP ─── */
+        .chat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5rem;
+            align-items: center;
+        }
+
+        .chat-desc p {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            margin-bottom: 1rem;
+        }
+
+        .chat-features {
+            list-style: none;
+            margin: 1.5rem 0 2.5rem;
+        }
+
+        .chat-features li {
+            color: var(--text-muted);
+            font-size: 0.97rem;
+            padding: 0.35rem 0;
+            display: flex;
+            align-items: baseline;
+            gap: 0.7rem;
+        }
+
+        .chat-features li::before {
+            content: '→';
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--gold);
+            flex-shrink: 0;
+        }
+
+        .btn-gold {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.85rem 2.2rem;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            transition: background 0.2s, color 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-gold:hover {
+            background: var(--gold);
+            color: var(--bg);
+        }
+
+        /* Fake Zulip terminal */
+        .chat-terminal {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        .chat-terminal-header {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .term-dot {
+            width: 9px; height: 9px;
+            border-radius: 50%;
+        }
+        .term-dot.r { background: #3f1a1c; }
+        .term-dot.y { background: #3d3015; }
+        .term-dot.g { background: #1a3022; }
+
+        .term-label {
+            margin-left: 0.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.62rem;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+        }
+
+        .chat-messages {
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .chat-msg {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+        }
+
+        .chat-user {
+            color: var(--gold);
+            margin-bottom: 0.2rem;
+            font-size: 0.66rem;
+            letter-spacing: 0.04em;
+        }
+
+        .chat-text {
+            color: var(--text-muted);
+            line-height: 1.55;
+        }
+
+        .chat-separator {
+            height: 1px;
+            background: var(--border-soft);
+        }
+
+        /* ─── MEMBERS ─── */
+        .members-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+            gap: 1rem;
+        }
+
+        .member-card {
+            padding: 1.5rem 1.25rem;
+            border: 1px solid var(--border);
+            text-align: center;
+            background: var(--surface);
+            transition: border-color 0.25s, transform 0.2s;
+        }
+
+        .member-card:hover {
+            border-color: rgba(200, 168, 75, 0.35);
+            transform: translateY(-2px);
+        }
+
+        .member-initial {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.8rem;
+            font-weight: 300;
+            font-style: italic;
+            color: var(--gold-dim);
+            line-height: 1;
+            margin-bottom: 0.6rem;
+            transition: color 0.2s;
+        }
+
+        .member-card:hover .member-initial { color: var(--gold); }
+
+        .member-name {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 0.3rem;
+        }
+
+        .member-role {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.58rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* ─── FOOTER ─── */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 2.5rem 3.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .footer-left {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        .footer-right {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.08em;
+            color: var(--text-faint);
+        }
+
+        .footer-right a {
+            color: var(--gold-dim);
+            transition: color 0.2s;
+        }
+
+        .footer-right a:hover { color: var(--gold); }
+
+        /* ─── REVEAL ON SCROLL ─── */
+        .reveal {
+            opacity: 0;
+            transform: translateY(18px);
+            transition: opacity 0.55s ease, transform 0.55s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* staggered children */
+        .reveal-stagger > * {
+            opacity: 0;
+            transform: translateY(14px);
+            transition: opacity 0.45s ease, transform 0.45s ease;
+        }
+
+        .reveal-stagger.visible > *:nth-child(1) { opacity: 1; transform: translateY(0); transition-delay: 0.0s; }
+        .reveal-stagger.visible > *:nth-child(2) { opacity: 1; transform: translateY(0); transition-delay: 0.07s; }
+        .reveal-stagger.visible > *:nth-child(3) { opacity: 1; transform: translateY(0); transition-delay: 0.14s; }
+        .reveal-stagger.visible > *:nth-child(4) { opacity: 1; transform: translateY(0); transition-delay: 0.21s; }
+        .reveal-stagger.visible > *:nth-child(5) { opacity: 1; transform: translateY(0); transition-delay: 0.28s; }
+        .reveal-stagger.visible > *:nth-child(6) { opacity: 1; transform: translateY(0); transition-delay: 0.35s; }
+        .reveal-stagger.visible > *:nth-child(7) { opacity: 1; transform: translateY(0); transition-delay: 0.42s; }
+        .reveal-stagger.visible > *:nth-child(8) { opacity: 1; transform: translateY(0); transition-delay: 0.49s; }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 900px) {
+            nav { padding: 1rem 1.75rem; }
+            .nav-links { display: none; }
+            .nav-menu-btn { display: block; }
+
+            section { padding: 4.5rem 1.75rem; }
+            .hero { padding: 8rem 1.75rem 4rem; }
+
+            .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+            .chat-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+
+            .ann-item { grid-template-columns: 1fr; gap: 0.4rem; }
+            .ann-date { padding-top: 0; }
+            .ann-badge { display: none; }
+
+            footer { flex-direction: column; align-items: flex-start; }
+        }
+
+        @media (max-width: 560px) {
+            .hero-title { font-size: clamp(4rem, 18vw, 6rem); }
+            .members-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     NAVIGATION
+══════════════════════════════════════════ -->
+<nav>
+    <a href="#" class="nav-brand">Fight Club</a>
+    <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#announcements">News</a></li>
+        <li><a href="#books">Books</a></li>
+        <li><a href="#exercises">Exercises</a></li>
+        <li><a href="#chat">Zulip</a></li>
+        <li><a href="#members">Members</a></li>
+    </ul>
+    <button class="nav-menu-btn" onclick="toggleMenu()">Menu</button>
+</nav>
+
+<!-- ══════════════════════════════════════════
+     HERO
+══════════════════════════════════════════ -->
+<div class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+
+    <span class="hero-deco d1">∂</span>
+    <span class="hero-deco d2">⊗</span>
+    <span class="hero-deco d3">Ω</span>
+    <span class="hero-deco d4">𝒪</span>
+
+    <div class="hero-content">
+        <p class="hero-eyebrow">NKUA Department of Mathematics · Spring 2024–25</p>
+
+        <h1 class="hero-title">
+            <span class="fight">Fight</span>
+            <span class="club">Club</span>
+        </h1>
+
+        <p class="hero-tagline">
+            An underground mathematics seminar for those who refuse to stop at the curriculum.
+        </p>
+
+        <div class="hero-pills">
+            <span class="pill">Algebraic Geometry</span>
+            <span class="pill">Commutative Algebra</span>
+            <span class="pill">K-Theory</span>
+            <span class="pill">Sheaf Theory</span>
+        </div>
+    </div>
+
+    <div class="scroll-hint">
+        <span>Scroll</span>
+        <div class="scroll-line"></div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ABOUT
+══════════════════════════════════════════ -->
+<div class="section-wrap">
+<section id="about">
+    <div class="section-label">§ 01 — About</div>
+    <h2 class="section-title">What is Fight Club?</h2>
+
+    <div class="about-grid">
+        <div class="about-text reveal">
+            <p>
+                Fight Club is an informal mathematics seminar, born inside the Department of
+                Mathematics at the National and Kapodistrian University of Athens. We meet twice
+                a week to tackle material far beyond what any standard course offers.
+            </p>
+            <p>
+                The club is run by students, for students. Every member presents, battles through
+                exercises, and is expected to fight — with the mathematics, with their own
+                intuitions, and occasionally with the definitions themselves.
+            </p>
+            <p>
+                Our material has ranged from the foundations of commutative algebra (Atiyah–Macdonald,
+                from scratch) to the geometry of algebraic curves and the Riemann–Roch theorem.
+                The common thread is rigor without mercy, and curiosity without limits.
+            </p>
+            <div class="rule">
+                "The first rule of Fight Club: you do not skip the details of a proof."
+            </div>
+            <p>
+                New members are always welcome. No background in algebraic geometry is assumed —
+                only the willingness to work hard and to ask "why?" before "how?"
+            </p>
+        </div>
+
+        <div>
+            <ul class="topics-list reveal-stagger">
+                <li><span class="topic-sym">𝒪</span> Algebraic Geometry</li>
+                <li><span class="topic-sym">⊕</span> Commutative Algebra</li>
+                <li><span class="topic-sym">K</span> K-Theory</li>
+                <li><span class="topic-sym">ω</span> Kähler Differentials</li>
+                <li><span class="topic-sym">∑</span> Riemann–Roch Theory</li>
+                <li><span class="topic-sym">ℱ</span> Sheaf Theory</li>
+                <li><span class="topic-sym">∂</span> Homological Algebra</li>
+            </ul>
+        </div>
+    </div>
+</section>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ANNOUNCEMENTS
+══════════════════════════════════════════ -->
+<div class="section-wrap">
+<section id="announcements">
+    <div class="section-label">§ 02 — Announcements</div>
+    <h2 class="section-title">Latest News</h2>
+    <p class="section-intro">Updates about sessions, schedule changes, and upcoming topics.</p>
+
+    <div class="ann-list reveal-stagger">
+
+        <div class="ann-item">
+            <div class="ann-date">06<br>2025</div>
+            <div>
+                <div class="ann-title">Fight Club resumes in Autumn 2025</div>
+                <div class="ann-body">
+                    The club will continue in the fall semester of 2025–26. The reading list
+                    for next year is under discussion. Join the Zulip to be notified when sessions
+                    are confirmed.
+                </div>
+            </div>
+            <div class="ann-badge new">New</div>
+        </div>
+
+        <div class="ann-item">
+            <div class="ann-date">05<br>2025</div>
+            <div>
+                <div class="ann-title">Spring semester wrap-up</div>
+                <div class="ann-body">
+                    We completed our study of Kähler differentials, the canonical sheaf,
+                    and the divisor-theoretic framework. The semester closed with a complete
+                    proof of the Riemann–Roch theorem for algebraic curves.
+                </div>
+            </div>
+            <div class="ann-badge">Archive</div>
+        </div>
+
+        <div class="ann-item">
+            <div class="ann-date">10<br>2024</div>
+            <div>
+                <div class="ann-title">Inaugural session — Atiyah–Macdonald begins</div>
+                <div class="ann-body">
+                    Fight Club held its first meeting, opening with Chapter 1 of
+                    Atiyah–Macdonald. Ten members attended. The fight had begun.
+                </div>
+            </div>
+            <div class="ann-badge">Archive</div>
+        </div>
+
+    </div>
+</section>
+</div>
+
+<!-- ══════════════════════════════════════════
+     BOOKS
+══════════════════════════════════════════ -->
+<div class="section-wrap">
+<section id="books">
+    <div class="section-label">§ 03 — Reading List</div>
+    <h2 class="section-title">Books We Are Reading</h2>
+    <p class="section-intro">Primary texts and references used in our sessions.</p>
+
+    <div class="books-grid reveal-stagger">
+
+        <div class="book-card">
+            <div class="book-cat">Primary Text · Algebraic Geometry</div>
+            <div class="book-title">Algebraic Curves</div>
+            <div class="book-author">William Fulton</div>
+            <div class="book-status current"><span class="dot"></span> Currently Reading</div>
+        </div>
+
+        <div class="book-card">
+            <div class="book-cat">Commutative Algebra</div>
+            <div class="book-title">Introduction to Commutative Algebra</div>
+            <div class="book-author">Atiyah &amp; Macdonald</div>
+            <div class="book-status current"><span class="dot"></span> Currently Reading</div>
+        </div>
+
+        <div class="book-card">
+            <div class="book-cat">Algebraic Geometry</div>
+            <div class="book-title">Algebraic Geometry</div>
+            <div class="book-author">Robin Hartshorne</div>
+            <div class="book-status"><span class="dot"></span> Reference</div>
+        </div>
+
+        <div class="book-card">
+            <div class="book-cat">Algebraic Geometry</div>
+            <div class="book-title">The Rising Sea (FOAG)</div>
+            <div class="book-author">Ravi Vakil</div>
+            <div class="book-status"><span class="dot"></span> Reference</div>
+        </div>
+
+        <div class="book-card">
+            <div class="book-cat">Commutative Algebra</div>
+            <div class="book-title">Commutative Ring Theory</div>
+            <div class="book-author">Hideyuki Matsumura</div>
+            <div class="book-status"><span class="dot"></span> Reference</div>
+        </div>
+
+        <div class="book-card">
+            <div class="book-cat">Homological Algebra</div>
+            <div class="book-title">An Introduction to Homological Algebra</div>
+            <div class="book-author">Charles Weibel</div>
+            <div class="book-status"><span class="dot"></span> Reference</div>
+        </div>
+
+    </div>
+</section>
+</div>
+
+<!-- ══════════════════════════════════════════
+     EXERCISES
+══════════════════════════════════════════ -->
+<div class="section-wrap">
+<section id="exercises">
+    <div class="section-label">§ 04 — Problem Sets</div>
+    <h2 class="section-title">Exercises</h2>
+    <p class="section-intro">
+        Problem sets from our sessions. Replace the <code>#</code> hrefs with actual PDF links.
+    </p>
+
+    <div class="ex-list reveal-stagger">
+
+        <a href="#" class="ex-item">
+            <div class="ex-num">01</div>
+            <div>
+                <div class="ex-title">Commutative Algebra — Rings, Ideals &amp; Modules</div>
+                <div class="ex-meta">Atiyah–Macdonald · Chapters 1–3 · 12 problems</div>
+            </div>
+            <div class="ex-arrow">→</div>
+        </a>
+
+        <a href="#" class="ex-item">
+            <div class="ex-num">02</div>
+            <div>
+                <div class="ex-title">Algebraic Curves — Affine Varieties</div>
+                <div class="ex-meta">Fulton · Chapters 1–3 · 10 problems</div>
+            </div>
+            <div class="ex-arrow">→</div>
+        </a>
+
+        <a href="#" class="ex-item">
+            <div class="ex-num">03</div>
+            <div>
+                <div class="ex-title">Sheaves — Definitions, Morphisms &amp; Stalks</div>
+                <div class="ex-meta">Hartshorne / Vakil · 8 problems</div>
+            </div>
+            <div class="ex-arrow">→</div>
+        </a>
+
+        <a href="#" class="ex-item">
+            <div class="ex-num">04</div>
+            <div>
+                <div class="ex-title">Kähler Differentials &amp; the Canonical Divisor</div>
+                <div class="ex-meta">Fulton Ch. 8 · Matsumura · 7 problems</div>
+            </div>
+            <div class="ex-arrow">→</div>
+        </a>
+
+    </div>
+</section>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ZULIP CHAT
+══════════════════════════════════════════ -->
+<div class="section-wrap">
+<section id="chat">
+    <div class="section-label">§ 05 — Community</div>
+    <h2 class="section-title">Join the Discussion</h2>
+
+    <div class="chat-grid">
+        <div class="chat-desc reveal">
+            <p>
+                We use <strong>Zulip</strong> as our primary communication platform.
+                Its inline LaTeX rendering makes it ideal for mathematical conversation —
+                no more screenshot equations.
+            </p>
+            <ul class="chat-features">
+                <li>Inline LaTeX with <code>$$\cdot$$</code> syntax</li>
+                <li>Organized threads by session and topic</li>
+                <li>Persistent searchable history</li>
+                <li>Open to all NKUA students</li>
+                <li>Free and open source</li>
+            </ul>
+            <!-- Replace href with your actual Zulip invite link -->
+            <a href="#" class="btn-gold">→ Join our Zulip</a>
+        </div>
+
+        <div class="chat-terminal reveal">
+            <div class="chat-terminal-header">
+                <span class="term-dot r"></span>
+                <span class="term-dot y"></span>
+                <span class="term-dot g"></span>
+                <span class="term-label">fight-club · #algebraic-geometry</span>
+            </div>
+            <div class="chat-messages">
+                <div class="chat-msg">
+                    <div class="chat-user">Vasilis  ·  15:03</div>
+                    <div class="chat-text">
+                        Does anyone see why \(\Omega_{B/k} \otimes_B k \cong \mathfrak{m}/\mathfrak{m}^2\)
+                        at a nonsingular point?
+                    </div>
+                </div>
+                <div class="chat-separator"></div>
+                <div class="chat-msg">
+                    <div class="chat-user">Nikos  ·  15:07</div>
+                    <div class="chat-text">
+                        Yes — use the second exact sequence for Kähler differentials and
+                        then Nakayama. The map \(d\colon \mathfrak{m}/\mathfrak{m}^2 \to \Omega_{B/k}\otimes k\)
+                        is the key.
+                    </div>
+                </div>
+                <div class="chat-separator"></div>
+                <div class="chat-msg">
+                    <div class="chat-user">Dimitra  ·  15:12</div>
+                    <div class="chat-text">
+                        Right. And at a nonsingular point the cotangent space has dimension
+                        \(\dim \mathcal{O}_{P,C} = 1\) for a curve, so it's free of rank 1 over \(k\).
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</div>
+
+<!-- ══════════════════════════════════════════
+     MEMBERS
+══════════════════════════════════════════ -->
+<div class="section-wrap">
+<section id="members">
+    <div class="section-label">§ 06 — Members</div>
+    <h2 class="section-title">Who We Are</h2>
+    <p class="section-intro">
+        The fighters of 2024–25. Add your own name by editing this file.
+    </p>
+
+    <div class="members-grid reveal-stagger">
+        <!-- ↓↓↓ Edit names, initials, and roles to match your actual members ↓↓↓ -->
+        <div class="member-card">
+            <div class="member-initial">V</div>
+            <div class="member-name">Vasilis</div>
+            <div class="member-role">Member<br>ΘΜ · Year 3</div>
+        </div>
+        <div class="member-card">
+            <div class="member-initial">N</div>
+            <div class="member-name">Your Name</div>
+            <div class="member-role">Lead · Organiser</div>
+        </div>
+        <div class="member-card">
+            <div class="member-initial">?</div>
+            <div class="member-name">Add Member</div>
+            <div class="member-role">Edit index.html</div>
+        </div>
+        <div class="member-card">
+            <div class="member-initial">?</div>
+            <div class="member-name">Add Member</div>
+            <div class="member-role">Edit index.html</div>
+        </div>
+    </div>
+</section>
+</div>
+
+<!-- ══════════════════════════════════════════
+     FOOTER
+══════════════════════════════════════════ -->
+<footer>
+    <div class="footer-left">
+        Fight Club · Department of Mathematics · NKUA<br>
+        Academic Year 2024–25
+    </div>
+    <div class="footer-right">
+        Hosted free on <a href="https://pages.github.com" target="_blank">GitHub Pages</a>
+    </div>
+</footer>
+
+<!-- ══════════════════════════════════════════
+     SCRIPTS
+══════════════════════════════════════════ -->
+<script>
+/* ── Scroll reveal ── */
+const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+        if (e.isIntersecting) {
+            e.target.classList.add('visible');
+            io.unobserve(e.target);
+        }
+    });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.reveal, .reveal-stagger').forEach(el => io.observe(el));
+
+/* ── Mobile menu (simple toggle) ── */
+function toggleMenu() {
+    const links = document.querySelector('.nav-links');
+    const open = links.style.display === 'flex';
+    links.style.display = open ? '' : 'flex';
+    links.style.flexDirection = 'column';
+    links.style.position = 'absolute';
+    links.style.top = '100%';
+    links.style.right = '1.75rem';
+    links.style.background = '#080b0e';
+    links.style.border = '1px solid #1c2530';
+    links.style.padding = '1rem 1.5rem';
+    links.style.gap = '1.25rem';
+    if (open) links.style.display = '';
+}
+
+/* ── Close mobile menu on link click ── */
+document.querySelectorAll('.nav-links a').forEach(a => {
+    a.addEventListener('click', () => {
+        const links = document.querySelector('.nav-links');
+        if (window.innerWidth <= 900) links.style.display = '';
+    });
+});
+
+/* ── MathJax typeset after DOM ready ── */
+document.addEventListener('DOMContentLoaded', () => {
+    if (window.MathJax) MathJax.typesetPromise();
+});
+</script>
+
+</body>
+</html>

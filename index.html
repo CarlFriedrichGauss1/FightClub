@@ -1,1193 +1,660 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="el">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fight Club — NKUA Mathematics</title>
-    <meta name="description" content="An underground mathematics seminar at NKUA. Algebraic Geometry, Commutative Algebra, K-Theory, and more.">
-
-    <!-- Fonts -->
+    <title>Fight Club — Τμήμα Μαθηματικών ΕΚΠΑ</title>
+    <meta name="description" content="Άτυπο σεμινάριο μαθηματικών στο ΕΚΠΑ. Αλγεβρική Γεωμετρία, Μεταθετική Άλγεβρα, K-Theory και Θεωρία Δεμάτων.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
-
-    <!-- MathJax -->
     <script>
         window.MathJax = {
-            tex: {
-                inlineMath: [['\\(', '\\)'], ['$', '$']],
-                displayMath: [['\\[', '\\]'], ['$$', '$$']]
-            },
+            tex: { inlineMath: [['\\(','\\)'],['$','$']], displayMath: [['\\[','\\]'],['$$','$$']] },
             svg: { fontCache: 'global' }
         };
     </script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 
-    <style>
-        /* ─── ROOT VARIABLES ─── */
-        :root {
-            --bg:          #0c1524;
-            --surface:     #111e33;
-            --surface2:    #162039;
-            --border:      #1e3257;
-            --border-soft: #182a48;
-            --text:        #e2ddd4;
-            --text-muted:  #7090b8;
-            --text-faint:  #2e4a6e;
-            --gold:        #d4aa4e;
-            --gold-dim:    #8a7030;
-            --crimson:     #9b1c2e;
-            --crimson-light: #c0293f;
-            --green:       #3d6b52;
-        }
-
-        /* ─── RESET & BASE ─── */
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; font-size: 17px; }
-
-        body {
-            background: var(--bg);
-            color: var(--text);
-            font-family: 'EB Garamond', Georgia, serif;
-            line-height: 1.75;
-            overflow-x: hidden;
-        }
-
-        a { color: inherit; text-decoration: none; }
-
-        code {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.82em;
-            color: var(--gold);
-            background: var(--surface);
-            padding: 0.1em 0.4em;
-            border-radius: 2px;
-        }
-
-        /* ─── SCROLLBAR ─── */
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: var(--bg); }
-        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-
-        /* ─── NAVIGATION ─── */
-        nav {
-            position: fixed;
-            inset: 0 0 auto 0;
-            z-index: 200;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 1.1rem 3.5rem;
-            background: rgba(8, 11, 14, 0.88);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-bottom: 1px solid var(--border-soft);
-        }
-
-        .nav-brand {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.05rem;
-            font-weight: 700;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            color: var(--gold);
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2.5rem;
-            list-style: none;
-        }
-
-        .nav-links a {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.68rem;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: var(--text-muted);
-            transition: color 0.2s;
-        }
-
-        .nav-links a:hover { color: var(--text); }
-
-        .nav-menu-btn {
-            display: none;
-            background: none;
-            border: 1px solid var(--border);
-            color: var(--text-muted);
-            padding: 0.4rem 0.7rem;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.7rem;
-            cursor: pointer;
-        }
-
-        /* ─── HERO ─── */
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-            padding: 9rem 3.5rem 5rem;
-        }
-
-        .hero-bg {
-            position: absolute;
-            inset: 0;
-            background:
-                radial-gradient(ellipse 70% 55% at 65% 35%, rgba(155, 28, 46, 0.09) 0%, transparent 65%),
-                radial-gradient(ellipse 50% 70% at 25% 65%, rgba(200, 168, 75, 0.05) 0%, transparent 65%),
-                radial-gradient(ellipse 40% 40% at 80% 75%, rgba(30, 37, 48, 0.5) 0%, transparent 70%);
-        }
-
-        .hero-grid {
-            position: absolute;
-            inset: 0;
-            background-image:
-                linear-gradient(var(--border-soft) 1px, transparent 1px),
-                linear-gradient(90deg, var(--border-soft) 1px, transparent 1px);
-            background-size: 64px 64px;
-            mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 80%);
-            opacity: 0.6;
-        }
-
-        /* Decorative math symbols */
-        .hero-deco {
-            position: absolute;
-            font-family: 'Cormorant Garamond', serif;
-            font-style: italic;
-            pointer-events: none;
-            user-select: none;
-            color: var(--text);
-            opacity: 0.025;
-            animation: float 12s ease-in-out infinite;
-        }
-        .hero-deco.d1 { top: 18%; left:  6%; font-size: 8rem; animation-delay: 0s; }
-        .hero-deco.d2 { bottom: 22%; right: 7%; font-size: 10rem; animation-delay: -4s; }
-        .hero-deco.d3 { top: 55%; left:  2%; font-size: 5rem; animation-delay: -8s; }
-        .hero-deco.d4 { top: 20%; right: 12%; font-size: 6rem; animation-delay: -2s; }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-14px); }
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 2;
-            text-align: center;
-            max-width: 860px;
-        }
-
-        .hero-eyebrow {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.7rem;
-            letter-spacing: 0.3em;
-            text-transform: uppercase;
-            color: var(--gold);
-            margin-bottom: 2.5rem;
-            opacity: 0;
-            animation: riseIn 0.9s cubic-bezier(0.25, 1, 0.5, 1) forwards 0.15s;
-        }
-
-        .hero-title {
-            font-family: 'Cormorant Garamond', serif;
-            font-weight: 700;
-            font-size: clamp(5rem, 12vw, 10.5rem);
-            line-height: 0.88;
-            letter-spacing: -0.03em;
-            margin-bottom: 2.5rem;
-            opacity: 0;
-            animation: riseIn 0.9s cubic-bezier(0.25, 1, 0.5, 1) forwards 0.3s;
-        }
-
-        .hero-title .fight {
-            display: block;
-            color: var(--crimson-light);
-            font-style: italic;
-        }
-
-        .hero-title .club {
-            display: block;
-            color: var(--text);
-        }
-
-        .hero-tagline {
-            font-size: 1.2rem;
-            font-style: italic;
-            color: var(--text-muted);
-            max-width: 500px;
-            margin: 0 auto 3rem;
-            opacity: 0;
-            animation: riseIn 0.9s cubic-bezier(0.25, 1, 0.5, 1) forwards 0.5s;
-        }
-
-        .hero-pills {
-            display: flex;
-            gap: 0.75rem;
-            justify-content: center;
-            flex-wrap: wrap;
-            opacity: 0;
-            animation: riseIn 0.9s cubic-bezier(0.25, 1, 0.5, 1) forwards 0.7s;
-        }
-
-        .pill {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.65rem;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            color: var(--text-muted);
-            border: 1px solid var(--border);
-            padding: 0.3rem 0.85rem;
-        }
-
-        .scroll-hint {
-            position: absolute;
-            bottom: 2.5rem;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.4rem;
-            opacity: 0;
-            animation: riseIn 1s ease forwards 1.2s;
-        }
-
-        .scroll-hint span {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.6rem;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            color: var(--text-faint);
-        }
-
-        .scroll-line {
-            width: 1px;
-            height: 40px;
-            background: linear-gradient(to bottom, var(--border), transparent);
-            animation: scrollPulse 1.8s ease infinite;
-        }
-
-        @keyframes scrollPulse {
-            0%, 100% { opacity: 0.4; transform: scaleY(1); }
-            50% { opacity: 1; transform: scaleY(1.2); }
-        }
-
-        @keyframes riseIn {
-            from { opacity: 0; transform: translateY(22px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-
-        /* ─── SECTION LAYOUT ─── */
-        .section-wrap {
-            border-top: 1px solid var(--border);
-        }
-
-        section {
-            padding: 6rem 3.5rem;
-            max-width: 1140px;
-            margin: 0 auto;
-        }
-
-        .section-label {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.68rem;
-            letter-spacing: 0.28em;
-            text-transform: uppercase;
-            color: var(--gold);
-            margin-bottom: 1.25rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .section-label::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: var(--border);
-            max-width: 64px;
-        }
-
-        .section-title {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: clamp(2rem, 4.5vw, 3.4rem);
-            font-weight: 600;
-            line-height: 1.05;
-            margin-bottom: 0.75rem;
-            letter-spacing: -0.01em;
-        }
-
-        .section-intro {
-            color: var(--text-muted);
-            font-size: 1.05rem;
-            max-width: 640px;
-            margin-bottom: 3.5rem;
-        }
-
-        /* ─── ABOUT ─── */
-        .about-grid {
-            display: grid;
-            grid-template-columns: 1.1fr 0.9fr;
-            gap: 5rem;
-            align-items: start;
-        }
-
-        .about-text p {
-            color: var(--text-muted);
-            margin-bottom: 1.1rem;
-            font-size: 1.05rem;
-        }
-
-        .about-text p:first-child {
-            color: var(--text);
-            font-size: 1.15rem;
-            font-style: italic;
-        }
-
-        .about-text .rule {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.1rem;
-            font-style: italic;
-            color: var(--text-muted);
-            border-left: 2px solid var(--crimson);
-            padding-left: 1.1rem;
-            margin: 1.5rem 0;
-        }
-
-        .topics-list {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 0;
-        }
-
-        .topics-list li {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            font-size: 0.97rem;
-            color: var(--text-muted);
-            padding: 0.9rem 1rem;
-            border-bottom: 1px solid var(--border-soft);
-            transition: color 0.2s, padding-left 0.2s;
-            cursor: default;
-        }
-
-        .topics-list li:first-child { border-top: 1px solid var(--border-soft); }
-
-        .topics-list li:hover {
-            color: var(--text);
-            padding-left: 1.4rem;
-        }
-
-        .topic-sym {
-            font-family: 'Cormorant Garamond', serif;
-            font-style: italic;
-            font-size: 1.2rem;
-            color: var(--gold);
-            width: 1.4rem;
-            text-align: center;
-            flex-shrink: 0;
-        }
-
-        /* ─── ANNOUNCEMENTS ─── */
-        .ann-list {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .ann-item {
-            display: grid;
-            grid-template-columns: 100px 1fr auto;
-            gap: 2.5rem;
-            align-items: start;
-            padding: 2rem 0;
-            border-bottom: 1px solid var(--border-soft);
-            transition: background 0.2s;
-        }
-
-        .ann-item:first-child { border-top: 1px solid var(--border-soft); }
-
-        .ann-item:hover { background: rgba(200, 168, 75, 0.02); }
-
-        .ann-date {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.68rem;
-            color: var(--text-muted);
-            letter-spacing: 0.06em;
-            padding-top: 0.3rem;
-            line-height: 1.4;
-        }
-
-        .ann-title {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.35rem;
-            font-weight: 600;
-            color: var(--text);
-            margin-bottom: 0.45rem;
-        }
-
-        .ann-body {
-            color: var(--text-muted);
-            font-size: 0.97rem;
-        }
-
-        .ann-badge {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.6rem;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            padding: 0.22rem 0.6rem;
-            border: 1px solid var(--border);
-            color: var(--text-muted);
-            align-self: start;
-            flex-shrink: 0;
-        }
-
-        .ann-badge.new {
-            border-color: var(--gold);
-            color: var(--gold);
-        }
-
-        /* ─── BOOKS ─── */
-        .books-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(256px, 1fr));
-            gap: 1.25rem;
-        }
-
-        .book-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            padding: 1.6rem;
-            position: relative;
-            overflow: hidden;
-            transition: border-color 0.3s, transform 0.25s;
-            display: block;
-            color: inherit;
-            text-decoration: none;
-        }
-
-        .book-card::after {
-            content: '';
-            position: absolute;
-            inset: 0 auto 0 0;
-            width: 2px;
-            background: var(--gold);
-            transform: scaleY(0);
-            transform-origin: bottom;
-            transition: transform 0.35s ease;
-        }
-
-        .book-card:hover {
-            border-color: rgba(200, 168, 75, 0.35);
-            transform: translateY(-3px);
-        }
-
-        .book-card:hover::after { transform: scaleY(1); }
-
-        .book-cat {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.62rem;
-            letter-spacing: 0.16em;
-            text-transform: uppercase;
-            color: var(--gold);
-            margin-bottom: 0.85rem;
-        }
-
-        .book-title {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.2rem;
-            font-weight: 600;
-            font-style: italic;
-            color: var(--text);
-            line-height: 1.3;
-            margin-bottom: 0.35rem;
-        }
-
-        .book-author {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            margin-bottom: 1.25rem;
-        }
-
-        .book-status {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.6rem;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: var(--text-faint);
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-        }
-
-        .book-status .dot {
-            width: 6px; height: 6px;
-            border-radius: 50%;
-            background: var(--text-faint);
-            flex-shrink: 0;
-        }
-
-        .book-status.current .dot { background: #4ade80; }
-        .book-status.current { color: #4ade80; }
-
-        .book-link-badge {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.58rem;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            color: var(--gold);
-            border: 1px solid var(--gold-dim);
-            padding: 0.15rem 0.45rem;
-            opacity: 0;
-            transition: opacity 0.25s;
-        }
-
-        .book-card:hover .book-link-badge { opacity: 1; }
-
-        /* ─── EXERCISES ─── */
-        .ex-list {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .ex-item {
-            display: grid;
-            grid-template-columns: 64px 1fr 32px;
-            gap: 1.5rem;
-            align-items: center;
-            padding: 1.5rem 1rem;
-            border-bottom: 1px solid var(--border-soft);
-            background: transparent;
-            transition: background 0.2s, padding-left 0.2s;
-            cursor: pointer;
-            color: var(--text);
-            text-decoration: none;
-        }
-
-        .ex-item:first-child { border-top: 1px solid var(--border-soft); }
-
-        .ex-item:hover {
-            background: rgba(200, 168, 75, 0.02);
-            padding-left: 1.4rem;
-        }
-
-        .ex-num {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 2.2rem;
-            font-weight: 300;
-            color: var(--border);
-            line-height: 1;
-            transition: color 0.2s;
-        }
-
-        .ex-item:hover .ex-num { color: var(--gold-dim); }
-
-        .ex-title {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.15rem;
-            font-weight: 600;
-            color: var(--text);
-            margin-bottom: 0.25rem;
-        }
-
-        .ex-meta {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.62rem;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: var(--text-muted);
-        }
-
-        .ex-arrow {
-            color: var(--gold);
-            font-size: 1.1rem;
-            opacity: 0;
-            transform: translateX(-5px);
-            transition: opacity 0.2s, transform 0.2s;
-        }
-
-        .ex-item:hover .ex-arrow { opacity: 1; transform: translateX(0); }
-
-        /* ─── ZULIP ─── */
-        .chat-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 5rem;
-            align-items: center;
-        }
-
-        .chat-desc p {
-            color: var(--text-muted);
-            font-size: 1.05rem;
-            margin-bottom: 1rem;
-        }
-
-        .chat-features {
-            list-style: none;
-            margin: 1.5rem 0 2.5rem;
-        }
-
-        .chat-features li {
-            color: var(--text-muted);
-            font-size: 0.97rem;
-            padding: 0.35rem 0;
-            display: flex;
-            align-items: baseline;
-            gap: 0.7rem;
-        }
-
-        .chat-features li::before {
-            content: '→';
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.75rem;
-            color: var(--gold);
-            flex-shrink: 0;
-        }
-
-        .btn-gold {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.85rem 2.2rem;
-            border: 1px solid var(--gold);
-            color: var(--gold);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.72rem;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            transition: background 0.2s, color 0.2s;
-            text-decoration: none;
-        }
-
-        .btn-gold:hover {
-            background: var(--gold);
-            color: var(--bg);
-        }
-
-        /* Fake Zulip terminal */
-        .chat-terminal {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            overflow: hidden;
-        }
-
-        .chat-terminal-header {
-            padding: 0.75rem 1rem;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .term-dot {
-            width: 9px; height: 9px;
-            border-radius: 50%;
-        }
-        .term-dot.r { background: #3f1a1c; }
-        .term-dot.y { background: #3d3015; }
-        .term-dot.g { background: #1a3022; }
-
-        .term-label {
-            margin-left: 0.5rem;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.62rem;
-            letter-spacing: 0.1em;
-            color: var(--text-muted);
-        }
-
-        .chat-messages {
-            padding: 1.25rem;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .chat-msg {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.72rem;
-        }
-
-        .chat-user {
-            color: var(--gold);
-            margin-bottom: 0.2rem;
-            font-size: 0.66rem;
-            letter-spacing: 0.04em;
-        }
-
-        .chat-text {
-            color: var(--text-muted);
-            line-height: 1.55;
-        }
-
-        .chat-separator {
-            height: 1px;
-            background: var(--border-soft);
-        }
-
-        /* ─── MEMBERS ─── */
-        .members-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-            gap: 1rem;
-        }
-
-        .member-card {
-            padding: 1.5rem 1.25rem;
-            border: 1px solid var(--border);
-            text-align: center;
-            background: var(--surface);
-            transition: border-color 0.25s, transform 0.2s;
-        }
-
-        .member-card:hover {
-            border-color: rgba(200, 168, 75, 0.35);
-            transform: translateY(-2px);
-        }
-
-        .member-initial {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 2.8rem;
-            font-weight: 300;
-            font-style: italic;
-            color: var(--gold-dim);
-            line-height: 1;
-            margin-bottom: 0.6rem;
-            transition: color 0.2s;
-        }
-
-        .member-card:hover .member-initial { color: var(--gold); }
-
-        .member-name {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.05rem;
-            font-weight: 600;
-            color: var(--text);
-            margin-bottom: 0.3rem;
-        }
-
-        .member-role {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.58rem;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: var(--text-muted);
-            line-height: 1.5;
-        }
-
-        /* ─── FOOTER ─── */
-        footer {
-            border-top: 1px solid var(--border);
-            padding: 2.5rem 3.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .footer-left {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.65rem;
-            letter-spacing: 0.08em;
-            color: var(--text-muted);
-            line-height: 1.7;
-        }
-
-        .footer-right {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.65rem;
-            letter-spacing: 0.08em;
-            color: var(--text-faint);
-        }
-
-        .footer-right a {
-            color: var(--gold-dim);
-            transition: color 0.2s;
-        }
-
-        .footer-right a:hover { color: var(--gold); }
-
-        /* ─── REVEAL ON SCROLL ─── */
-        .reveal {
-            opacity: 0;
-            transform: translateY(18px);
-            transition: opacity 0.55s ease, transform 0.55s ease;
-        }
-
-        .reveal.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* staggered children */
-        .reveal-stagger > * {
-            opacity: 0;
-            transform: translateY(14px);
-            transition: opacity 0.45s ease, transform 0.45s ease;
-        }
-
-        .reveal-stagger.visible > *:nth-child(1) { opacity: 1; transform: translateY(0); transition-delay: 0.0s; }
-        .reveal-stagger.visible > *:nth-child(2) { opacity: 1; transform: translateY(0); transition-delay: 0.07s; }
-        .reveal-stagger.visible > *:nth-child(3) { opacity: 1; transform: translateY(0); transition-delay: 0.14s; }
-        .reveal-stagger.visible > *:nth-child(4) { opacity: 1; transform: translateY(0); transition-delay: 0.21s; }
-        .reveal-stagger.visible > *:nth-child(5) { opacity: 1; transform: translateY(0); transition-delay: 0.28s; }
-        .reveal-stagger.visible > *:nth-child(6) { opacity: 1; transform: translateY(0); transition-delay: 0.35s; }
-        .reveal-stagger.visible > *:nth-child(7) { opacity: 1; transform: translateY(0); transition-delay: 0.42s; }
-        .reveal-stagger.visible > *:nth-child(8) { opacity: 1; transform: translateY(0); transition-delay: 0.49s; }
-
-        /* ─── RESPONSIVE ─── */
-        @media (max-width: 900px) {
-            nav { padding: 1rem 1.75rem; }
-            .nav-links { display: none; }
-            .nav-menu-btn { display: block; }
-
-            section { padding: 4.5rem 1.75rem; }
-            .hero { padding: 8rem 1.75rem 4rem; }
-
-            .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
-            .chat-grid { grid-template-columns: 1fr; gap: 2.5rem; }
-
-            .ann-item { grid-template-columns: 1fr; gap: 0.4rem; }
-            .ann-date { padding-top: 0; }
-            .ann-badge { display: none; }
-
-            footer { flex-direction: column; align-items: flex-start; }
-        }
-
-        @media (max-width: 560px) {
-            .hero-title { font-size: clamp(4rem, 18vw, 6rem); }
-            .members-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-    </style>
+<style>
+:root {
+    --bg:           #0b1320;
+    --bg2:          #0f1a2e;
+    --surface:      #111e35;
+    --surface2:     #162240;
+    --border:       #1e3460;
+    --border-soft:  #162040;
+    --text:         #e4dfd6;
+    --text-muted:   #6e8fb5;
+    --text-faint:   #2c4470;
+    --gold:         #d4a94a;
+    --gold-dim:     #7a5e28;
+    --gold-glow:    rgba(212,169,74,0.10);
+    --crimson:      #8c1a2a;
+    --crimson-l:    #b82438;
+    --crimson-glow: rgba(184,36,56,0.10);
+    --teal-l:       #2d9a9a;
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; font-size:17px; }
+body { background:var(--bg); color:var(--text); font-family:'EB Garamond',Georgia,serif; line-height:1.78; overflow-x:hidden; }
+a { color:inherit; text-decoration:none; }
+::-webkit-scrollbar { width:3px; }
+::-webkit-scrollbar-track { background:var(--bg); }
+::-webkit-scrollbar-thumb { background:var(--border); }
+
+/* NAV */
+nav {
+    position:fixed; inset:0 0 auto 0; z-index:200;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:1rem 3.5rem;
+    background:rgba(11,19,32,0.92); backdrop-filter:blur(20px);
+    border-bottom:1px solid var(--border-soft);
+}
+.nav-brand { font-family:'Cormorant Garamond',serif; font-size:1rem; font-weight:700; letter-spacing:0.22em; text-transform:uppercase; color:var(--gold); display:flex; align-items:center; gap:0.6rem; }
+.nav-brand-icon { color:var(--crimson-l); font-style:italic; }
+.nav-links { display:flex; gap:2.2rem; list-style:none; }
+.nav-links a { font-family:'JetBrains Mono',monospace; font-size:0.66rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted); transition:color 0.2s; position:relative; }
+.nav-links a::after { content:''; position:absolute; left:0; bottom:-3px; width:0; height:1px; background:var(--gold); transition:width 0.25s; }
+.nav-links a:hover { color:var(--text); }
+.nav-links a:hover::after { width:100%; }
+.nav-menu-btn { display:none; background:none; border:1px solid var(--border); color:var(--text-muted); padding:0.4rem 0.75rem; font-family:'JetBrains Mono',monospace; font-size:0.68rem; cursor:pointer; }
+
+/* HERO */
+.hero { min-height:100vh; display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; padding:9rem 3.5rem 5rem; }
+.hero-canvas {
+    position:absolute; inset:0;
+    background:
+        radial-gradient(ellipse 60% 50% at 60% 30%, var(--crimson-glow) 0%, transparent 65%),
+        radial-gradient(ellipse 45% 60% at 20% 70%, rgba(30,52,96,0.4) 0%, transparent 65%);
+}
+.hero-grid {
+    position:absolute; inset:0;
+    background-image: linear-gradient(var(--border-soft) 1px, transparent 1px), linear-gradient(90deg, var(--border-soft) 1px, transparent 1px);
+    background-size:72px 72px;
+    mask-image:radial-gradient(ellipse 85% 85% at 50% 50%, black 20%, transparent 80%);
+    opacity:0.5;
+}
+.hero-deco { position:absolute; font-family:'Cormorant Garamond',serif; font-style:italic; pointer-events:none; user-select:none; color:var(--text); animation:floatDeco 14s ease-in-out infinite; }
+.hero-deco.d1 { top:17%; left:5%;  font-size:8rem;  opacity:0.022; animation-delay:0s; }
+.hero-deco.d2 { bottom:20%; right:6%; font-size:11rem; opacity:0.018; animation-delay:-5s; }
+.hero-deco.d3 { top:58%; left:2%;  font-size:5rem;  opacity:0.025; animation-delay:-9s; }
+.hero-deco.d4 { top:18%; right:10%; font-size:6rem; opacity:0.02; animation-delay:-3s; }
+@keyframes floatDeco { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-16px); } }
+.hero-content { position:relative; z-index:2; text-align:center; max-width:900px; }
+.hero-eyebrow { font-family:'JetBrains Mono',monospace; font-size:0.69rem; letter-spacing:0.28em; text-transform:uppercase; color:var(--gold); margin-bottom:2.5rem; opacity:0; animation:riseIn 0.9s cubic-bezier(0.25,1,0.5,1) forwards 0.15s; }
+.hero-title { font-family:'Cormorant Garamond',serif; font-weight:700; font-size:clamp(5.5rem,13vw,11rem); line-height:0.87; letter-spacing:-0.03em; margin-bottom:2.5rem; opacity:0; animation:riseIn 0.9s cubic-bezier(0.25,1,0.5,1) forwards 0.3s; }
+.hero-title .fight { display:block; color:var(--crimson-l); font-style:italic; }
+.hero-title .club  { display:block; color:var(--text); }
+.hero-tagline { font-size:1.2rem; font-style:italic; color:var(--text-muted); max-width:520px; margin:0 auto 2.5rem; line-height:1.6; opacity:0; animation:riseIn 0.9s cubic-bezier(0.25,1,0.5,1) forwards 0.5s; }
+.hero-pills { display:flex; gap:0.7rem; justify-content:center; flex-wrap:wrap; margin-bottom:3rem; opacity:0; animation:riseIn 0.9s cubic-bezier(0.25,1,0.5,1) forwards 0.65s; }
+.pill { font-family:'JetBrains Mono',monospace; font-size:0.64rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-muted); border:1px solid var(--border); padding:0.28rem 0.8rem; transition:border-color 0.2s, color 0.2s; }
+.pill:hover { border-color:var(--gold-dim); color:var(--text); }
+.hero-cta { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; opacity:0; animation:riseIn 0.9s cubic-bezier(0.25,1,0.5,1) forwards 0.8s; }
+.btn-primary { display:inline-flex; align-items:center; gap:0.6rem; padding:0.8rem 2rem; background:var(--crimson-l); color:var(--text); font-family:'JetBrains Mono',monospace; font-size:0.7rem; letter-spacing:0.14em; text-transform:uppercase; transition:background 0.2s; }
+.btn-primary:hover { background:#d02a42; }
+.btn-outline { display:inline-flex; align-items:center; gap:0.6rem; padding:0.8rem 2rem; border:1px solid var(--border); color:var(--text-muted); font-family:'JetBrains Mono',monospace; font-size:0.7rem; letter-spacing:0.14em; text-transform:uppercase; transition:border-color 0.2s, color 0.2s; }
+.btn-outline:hover { border-color:var(--text-muted); color:var(--text); }
+.scroll-hint { position:absolute; bottom:2.5rem; left:50%; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:0.4rem; opacity:0; animation:riseIn 1s ease forwards 1.3s; }
+.scroll-hint span { font-family:'JetBrains Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--text-faint); }
+.scroll-line { width:1px; height:40px; background:linear-gradient(to bottom,var(--border),transparent); animation:scrollPulse 1.8s ease infinite; }
+@keyframes scrollPulse { 0%,100% { opacity:0.4; } 50% { opacity:1; } }
+@keyframes riseIn { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+
+/* STAT BAR */
+.stat-bar { border-top:1px solid var(--border-soft); border-bottom:1px solid var(--border-soft); background:var(--surface); }
+.stat-bar-inner { max-width:1140px; margin:0 auto; display:grid; grid-template-columns:repeat(4,1fr); }
+.stat-item { padding:2rem 2.5rem; border-right:1px solid var(--border-soft); text-align:center; }
+.stat-item:last-child { border-right:none; }
+.stat-num { font-family:'Cormorant Garamond',serif; font-size:3rem; font-weight:300; color:var(--gold); line-height:1; margin-bottom:0.3rem; }
+.stat-label { font-family:'JetBrains Mono',monospace; font-size:0.62rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--text-muted); }
+
+/* SECTIONS */
+.section-wrap { border-top:1px solid var(--border-soft); }
+section { padding:6rem 3.5rem; max-width:1140px; margin:0 auto; }
+.section-label { font-family:'JetBrains Mono',monospace; font-size:0.67rem; letter-spacing:0.28em; text-transform:uppercase; color:var(--gold); margin-bottom:1.2rem; display:flex; align-items:center; gap:1rem; }
+.section-label::after { content:''; flex:1; height:1px; background:var(--border); max-width:64px; }
+.section-title { font-family:'Cormorant Garamond',serif; font-size:clamp(2rem,4.5vw,3.4rem); font-weight:600; line-height:1.05; margin-bottom:0.7rem; letter-spacing:-0.01em; }
+.section-intro { color:var(--text-muted); font-size:1.05rem; max-width:640px; margin-bottom:3.5rem; }
+
+/* ABOUT */
+.about-grid { display:grid; grid-template-columns:1.15fr 0.85fr; gap:5rem; align-items:start; }
+.about-text p { color:var(--text-muted); margin-bottom:1.1rem; font-size:1.05rem; }
+.about-text p:first-child { color:var(--text); font-size:1.15rem; font-style:italic; }
+.about-blockquote { font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-style:italic; color:var(--text-muted); border-left:2px solid var(--crimson-l); padding:0.5rem 0 0.5rem 1.2rem; margin:1.5rem 0; line-height:1.65; }
+.topics-list { list-style:none; }
+.topics-list li { display:flex; align-items:center; gap:1rem; font-size:0.97rem; color:var(--text-muted); padding:0.9rem 1rem; border-bottom:1px solid var(--border-soft); transition:color 0.2s, padding-left 0.22s, background 0.2s; cursor:default; }
+.topics-list li:first-child { border-top:1px solid var(--border-soft); }
+.topics-list li:hover { color:var(--text); padding-left:1.5rem; background:rgba(212,169,74,0.02); }
+.topic-sym { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:1.25rem; color:var(--gold); width:1.5rem; text-align:center; flex-shrink:0; }
+
+/* SESSION LOG */
+.timeline { position:relative; padding-left:2rem; }
+.timeline::before { content:''; position:absolute; left:0; top:0; bottom:0; width:1px; background:var(--border); }
+.tl-item { position:relative; padding:0 0 2.5rem 2.5rem; }
+.tl-item:last-child { padding-bottom:0; }
+.tl-dot { position:absolute; left:-0.45rem; top:0.45rem; width:10px; height:10px; border-radius:50%; background:var(--border); border:1px solid var(--border); transition:background 0.2s; }
+.tl-item:hover .tl-dot { background:var(--gold); border-color:var(--gold); }
+.tl-item.active .tl-dot { background:var(--crimson-l); border-color:var(--crimson-l); }
+.tl-date { font-family:'JetBrains Mono',monospace; font-size:0.63rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted); margin-bottom:0.35rem; }
+.tl-title { font-family:'Cormorant Garamond',serif; font-size:1.25rem; font-weight:600; color:var(--text); margin-bottom:0.3rem; }
+.tl-body { color:var(--text-muted); font-size:0.96rem; min-height:1rem; }
+.tl-tags { display:flex; flex-wrap:wrap; gap:0.4rem; margin-top:0.6rem; }
+.tl-tag { font-family:'JetBrains Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-faint); border:1px solid var(--border-soft); padding:0.12rem 0.5rem; }
+
+/* ANNOUNCEMENTS */
+.ann-list { display:flex; flex-direction:column; }
+.ann-item { display:grid; grid-template-columns:90px 1fr auto; gap:2.5rem; align-items:start; padding:2rem 0; border-bottom:1px solid var(--border-soft); transition:background 0.2s; }
+.ann-item:first-child { border-top:1px solid var(--border-soft); }
+.ann-item:hover { background:var(--gold-glow); }
+.ann-date { font-family:'JetBrains Mono',monospace; font-size:0.67rem; color:var(--text-muted); letter-spacing:0.06em; padding-top:0.3rem; line-height:1.5; }
+.ann-title { font-family:'Cormorant Garamond',serif; font-size:1.35rem; font-weight:600; color:var(--text); margin-bottom:0.4rem; }
+.ann-body { color:var(--text-muted); font-size:0.97rem; }
+.ann-badge { font-family:'JetBrains Mono',monospace; font-size:0.6rem; letter-spacing:0.12em; text-transform:uppercase; padding:0.2rem 0.6rem; border:1px solid var(--border); color:var(--text-muted); align-self:start; flex-shrink:0; }
+.ann-badge.new { border-color:var(--gold); color:var(--gold); }
+
+/* BOOKS */
+.books-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:1.2rem; }
+.book-card { background:var(--surface); border:1px solid var(--border); padding:1.7rem; position:relative; overflow:hidden; transition:border-color 0.3s, transform 0.25s, box-shadow 0.3s; display:block; color:inherit; cursor:default; }
+.book-card.linked { cursor:pointer; }
+.book-card::before { content:''; position:absolute; inset:0; opacity:0; background:radial-gradient(ellipse at top left, var(--gold-glow), transparent 70%); transition:opacity 0.35s; }
+.book-card::after { content:''; position:absolute; inset:0 auto 0 0; width:2px; background:linear-gradient(to bottom, var(--gold), var(--gold-dim)); transform:scaleY(0); transform-origin:bottom; transition:transform 0.35s; }
+.book-card:hover { border-color:rgba(212,169,74,0.4); transform:translateY(-4px); box-shadow:0 12px 40px rgba(0,0,0,0.35); }
+.book-card:hover::before { opacity:1; }
+.book-card:hover::after { transform:scaleY(1); }
+.book-cat { font-family:'JetBrains Mono',monospace; font-size:0.61rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--gold); margin-bottom:0.85rem; }
+.book-title { font-family:'Cormorant Garamond',serif; font-size:1.2rem; font-weight:600; font-style:italic; color:var(--text); line-height:1.3; margin-bottom:0.3rem; }
+.book-author { color:var(--text-muted); font-size:0.9rem; margin-bottom:1.3rem; }
+.book-status { font-family:'JetBrains Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-faint); display:flex; align-items:center; gap:0.4rem; }
+.book-status .dot { width:6px; height:6px; border-radius:50%; background:var(--text-faint); flex-shrink:0; }
+.book-status.current .dot { background:#4ade80; }
+.book-status.current { color:#4ade80; }
+.book-link-badge { position:absolute; top:1rem; right:1rem; font-family:'JetBrains Mono',monospace; font-size:0.58rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold); border:1px solid var(--gold-dim); padding:0.15rem 0.45rem; opacity:0; transition:opacity 0.25s; }
+.book-card:hover .book-link-badge { opacity:1; }
+
+/* EXERCISES */
+.ex-list { display:flex; flex-direction:column; }
+.ex-item { display:grid; grid-template-columns:64px 1fr 32px; gap:1.5rem; align-items:center; padding:1.5rem 1rem; border-bottom:1px solid var(--border-soft); background:transparent; transition:background 0.2s, padding-left 0.22s; cursor:pointer; color:var(--text); }
+.ex-item:first-child { border-top:1px solid var(--border-soft); }
+.ex-item:hover { background:var(--gold-glow); padding-left:1.5rem; }
+.ex-num { font-family:'Cormorant Garamond',serif; font-size:2.4rem; font-weight:300; color:var(--border); line-height:1; transition:color 0.2s; }
+.ex-item:hover .ex-num { color:var(--gold-dim); }
+.ex-title { font-family:'Cormorant Garamond',serif; font-size:1.18rem; font-weight:600; color:var(--text); margin-bottom:0.22rem; }
+.ex-meta { font-family:'JetBrains Mono',monospace; font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted); }
+.ex-arrow { color:var(--gold); font-size:1.1rem; opacity:0; transform:translateX(-5px); transition:opacity 0.2s, transform 0.2s; }
+.ex-item:hover .ex-arrow { opacity:1; transform:translateX(0); }
+
+/* RESOURCES */
+.resources-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:1.2rem; }
+.resource-card { background:var(--surface); border:1px solid var(--border); padding:1.5rem; display:flex; flex-direction:column; gap:0.7rem; transition:border-color 0.25s, transform 0.2s; text-decoration:none; color:inherit; }
+.resource-card:hover { border-color:rgba(212,169,74,0.35); transform:translateY(-3px); }
+.resource-card-top { display:flex; align-items:center; justify-content:space-between; }
+.resource-cat { font-family:'JetBrains Mono',monospace; font-size:0.6rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--teal-l); }
+.resource-arrow { color:var(--text-faint); font-size:0.9rem; transition:color 0.2s, transform 0.2s; }
+.resource-card:hover .resource-arrow { color:var(--gold); transform:translate(2px,-2px); }
+.resource-title { font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-weight:600; color:var(--text); }
+.resource-desc { color:var(--text-muted); font-size:0.93rem; line-height:1.55; }
+
+/* ZULIP */
+.chat-grid { display:grid; grid-template-columns:1fr 1fr; gap:5rem; align-items:center; }
+.chat-desc p { color:var(--text-muted); font-size:1.05rem; margin-bottom:1rem; }
+.chat-features { list-style:none; margin:1.5rem 0 2.5rem; }
+.chat-features li { color:var(--text-muted); font-size:0.97rem; padding:0.35rem 0; display:flex; align-items:baseline; gap:0.7rem; }
+.chat-features li::before { content:'→'; font-family:'JetBrains Mono',monospace; font-size:0.75rem; color:var(--gold); flex-shrink:0; }
+.btn-gold { display:inline-flex; align-items:center; gap:0.75rem; padding:0.85rem 2.2rem; border:1px solid var(--gold); color:var(--gold); font-family:'JetBrains Mono',monospace; font-size:0.72rem; letter-spacing:0.15em; text-transform:uppercase; transition:background 0.2s, color 0.2s; }
+.btn-gold:hover { background:var(--gold); color:var(--bg); }
+.chat-terminal { background:var(--surface); border:1px solid var(--border); overflow:hidden; }
+.chat-terminal-header { padding:0.75rem 1rem; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:0.5rem; }
+.term-dot { width:9px; height:9px; border-radius:50%; }
+.term-dot.r { background:#3f1a1c; } .term-dot.y { background:#3d3015; } .term-dot.g { background:#1a3022; }
+.term-label { margin-left:0.5rem; font-family:'JetBrains Mono',monospace; font-size:0.62rem; letter-spacing:0.1em; color:var(--text-muted); }
+.chat-messages { padding:1.25rem; display:flex; flex-direction:column; gap:1rem; }
+.chat-msg { font-family:'JetBrains Mono',monospace; font-size:0.72rem; }
+.chat-user { color:var(--gold); margin-bottom:0.2rem; font-size:0.66rem; letter-spacing:0.04em; }
+.chat-text { color:var(--text-muted); line-height:1.55; }
+.chat-separator { height:1px; background:var(--border-soft); }
+
+/* JOIN BANNER */
+.join-banner { background:var(--surface); border-top:1px solid var(--border-soft); border-bottom:1px solid var(--border-soft); }
+.join-banner-inner { max-width:1140px; margin:0 auto; padding:5rem 3.5rem; display:grid; grid-template-columns:1fr auto; gap:3rem; align-items:center; }
+.join-title { font-family:'Cormorant Garamond',serif; font-size:clamp(1.8rem,3.5vw,2.8rem); font-weight:600; line-height:1.15; margin-bottom:0.6rem; }
+.join-sub { color:var(--text-muted); font-size:1.05rem; max-width:560px; }
+
+/* MEMBERS */
+.members-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(170px,1fr)); gap:1rem; }
+.member-card { padding:1.6rem 1.25rem; border:1px solid var(--border); text-align:center; background:var(--surface); transition:border-color 0.25s, transform 0.2s, box-shadow 0.25s; }
+.member-card:hover { border-color:rgba(212,169,74,0.35); transform:translateY(-3px); box-shadow:0 8px 24px rgba(0,0,0,0.3); }
+.member-initial { font-family:'Cormorant Garamond',serif; font-size:2.8rem; font-weight:300; font-style:italic; color:var(--gold-dim); line-height:1; margin-bottom:0.6rem; transition:color 0.2s; }
+.member-card:hover .member-initial { color:var(--gold); }
+.member-name { font-family:'Cormorant Garamond',serif; font-size:1.05rem; font-weight:600; color:var(--text); margin-bottom:0.3rem; }
+.member-role { font-family:'JetBrains Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted); line-height:1.5; }
+
+/* FOOTER */
+footer { border-top:1px solid var(--border); padding:2.5rem 3.5rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem; }
+.footer-brand { font-family:'Cormorant Garamond',serif; font-size:1.5rem; font-weight:700; font-style:italic; color:var(--gold-dim); margin-bottom:0.25rem; }
+.footer-left { font-family:'JetBrains Mono',monospace; font-size:0.64rem; letter-spacing:0.08em; color:var(--text-muted); line-height:1.75; }
+.footer-right { font-family:'JetBrains Mono',monospace; font-size:0.63rem; letter-spacing:0.08em; color:var(--text-faint); }
+.footer-right a { color:var(--gold-dim); transition:color 0.2s; }
+.footer-right a:hover { color:var(--gold); }
+
+/* REVEAL */
+.reveal { opacity:0; transform:translateY(20px); transition:opacity 0.55s ease, transform 0.55s ease; }
+.reveal.visible { opacity:1; transform:translateY(0); }
+.reveal-stagger > * { opacity:0; transform:translateY(14px); transition:opacity 0.45s ease, transform 0.45s ease; }
+.reveal-stagger.visible > *:nth-child(1) { opacity:1; transform:translateY(0); transition-delay:0.00s; }
+.reveal-stagger.visible > *:nth-child(2) { opacity:1; transform:translateY(0); transition-delay:0.07s; }
+.reveal-stagger.visible > *:nth-child(3) { opacity:1; transform:translateY(0); transition-delay:0.14s; }
+.reveal-stagger.visible > *:nth-child(4) { opacity:1; transform:translateY(0); transition-delay:0.21s; }
+.reveal-stagger.visible > *:nth-child(5) { opacity:1; transform:translateY(0); transition-delay:0.28s; }
+.reveal-stagger.visible > *:nth-child(6) { opacity:1; transform:translateY(0); transition-delay:0.35s; }
+.reveal-stagger.visible > *:nth-child(7) { opacity:1; transform:translateY(0); transition-delay:0.42s; }
+.reveal-stagger.visible > *:nth-child(8) { opacity:1; transform:translateY(0); transition-delay:0.49s; }
+
+/* RESPONSIVE */
+@media (max-width:960px) {
+    nav { padding:1rem 1.75rem; }
+    .nav-links { display:none; }
+    .nav-menu-btn { display:block; }
+    section { padding:4.5rem 1.75rem; }
+    .hero { padding:8rem 1.75rem 4rem; }
+    .about-grid, .chat-grid { grid-template-columns:1fr; gap:2.5rem; }
+    .stat-bar-inner { grid-template-columns:repeat(2,1fr); }
+    .stat-item:nth-child(2) { border-right:none; }
+    .ann-item { grid-template-columns:1fr; gap:0.4rem; }
+    .ann-badge { display:none; }
+    .join-banner-inner { grid-template-columns:1fr; }
+    footer { flex-direction:column; align-items:flex-start; }
+}
+@media (max-width:560px) {
+    .hero-title { font-size:clamp(4rem,18vw,6rem); }
+    .members-grid { grid-template-columns:repeat(2,1fr); }
+    .stat-bar-inner { grid-template-columns:repeat(2,1fr); }
+}
+</style>
 </head>
 <body>
 
-<!-- ══════════════════════════════════════════
-     NAVIGATION
-══════════════════════════════════════════ -->
+<!-- ΠΛΟΗΓΗΣΗ -->
 <nav>
-    <a href="#" class="nav-brand">Fight Club</a>
+    <a href="#" class="nav-brand">
+        <span class="nav-brand-icon">F</span>ight Club
+    </a>
     <ul class="nav-links">
-        <li><a href="#about">About</a></li>
-        <li><a href="#announcements">News</a></li>
-        <li><a href="#books">Books</a></li>
-        <li><a href="#exercises">Exercises</a></li>
+        <li><a href="#about">Σχετικά</a></li>
+        <li><a href="#sessions">Συνεδρίες</a></li>
+        <li><a href="#announcements">Ανακοινώσεις</a></li>
+        <li><a href="#books">Βιβλία</a></li>
+        <li><a href="#exercises">Ασκήσεις</a></li>
+        <li><a href="#resources">Πόροι</a></li>
         <li><a href="#chat">Zulip</a></li>
-        <li><a href="#members">Members</a></li>
+        <li><a href="#members">Μέλη</a></li>
     </ul>
-    <button class="nav-menu-btn" onclick="toggleMenu()">Menu</button>
+    <button class="nav-menu-btn" onclick="toggleMenu()">Μενού</button>
 </nav>
 
-<!-- ══════════════════════════════════════════
-     HERO
-══════════════════════════════════════════ -->
+<!-- HERO -->
 <div class="hero">
-    <div class="hero-bg"></div>
+    <div class="hero-canvas"></div>
     <div class="hero-grid"></div>
-
     <span class="hero-deco d1">∂</span>
     <span class="hero-deco d2">⊗</span>
     <span class="hero-deco d3">Ω</span>
     <span class="hero-deco d4">𝒪</span>
-
     <div class="hero-content">
-        <p class="hero-eyebrow">NKUA Department of Mathematics · Spring 2024–25</p>
-
+        <p class="hero-eyebrow">ΕΚΠΑ · Τμήμα Μαθηματικών · 2024–25</p>
         <h1 class="hero-title">
             <span class="fight">Fight</span>
             <span class="club">Club</span>
         </h1>
-
         <p class="hero-tagline">
-            An underground mathematics seminar for those who refuse to stop at the curriculum.
+            <!-- Συμπλήρωσε το σύνθημα / tagline του club εδώ -->
         </p>
-
         <div class="hero-pills">
-            <span class="pill">Algebraic Geometry</span>
-            <span class="pill">Commutative Algebra</span>
+            <span class="pill">Αλγεβρική Γεωμετρία</span>
+            <span class="pill">Μεταθετική Άλγεβρα</span>
             <span class="pill">K-Theory</span>
-            <span class="pill">Sheaf Theory</span>
+            <span class="pill">Θεωρία Δεμάτων</span>
+            <span class="pill">Kähler Διαφορικά</span>
+        </div>
+        <div class="hero-cta">
+            <a href="#chat" class="btn-primary">→ Γίνε Μέλος</a>
+            <a href="#sessions" class="btn-outline">Δες τις Συνεδρίες</a>
         </div>
     </div>
-
     <div class="scroll-hint">
-        <span>Scroll</span>
+        <span>Κύλισε</span>
         <div class="scroll-line"></div>
     </div>
 </div>
 
-<!-- ══════════════════════════════════════════
-     ABOUT
-══════════════════════════════════════════ -->
+<!-- ΣΤΑΤΙΣΤΙΚΑ -->
+<div class="stat-bar">
+    <div class="stat-bar-inner reveal-stagger">
+        <div class="stat-item">
+            <div class="stat-num">2</div>
+            <div class="stat-label">Συνεδρίες / εβδομάδα</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-num">3</div>
+            <div class="stat-label">Φυλλάδια Ασκήσεων</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-num">6</div>
+            <div class="stat-label">Βιβλία</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-num">1</div>
+            <div class="stat-label">Χρόνος Μαθηματικών</div>
+        </div>
+    </div>
+</div>
+
+<!-- ΣΧΕΤΙΚΑ -->
 <div class="section-wrap">
 <section id="about">
-    <div class="section-label">§ 01 — About</div>
-    <h2 class="section-title">What is Fight Club?</h2>
-
+    <div class="section-label">§ 01 — Σχετικά</div>
+    <h2 class="section-title">Τι είναι το Fight Club;</h2>
     <div class="about-grid">
         <div class="about-text reveal">
-            <p>
-                Fight Club is an informal mathematics seminar, born inside the Department of
-                Mathematics at the National and Kapodistrian University of Athens. We meet twice
-                a week to tackle material far beyond what any standard course offers.
-            </p>
-            <p>
-                The club is run by students, for students. Every member presents, battles through
-                exercises, and is expected to fight — with the mathematics, with their own
-                intuitions, and occasionally with the definitions themselves.
-            </p>
-            <p>
-                Our material has ranged from the foundations of commutative algebra (Atiyah–Macdonald,
-                from scratch) to the geometry of algebraic curves and the Riemann–Roch theorem.
-                The common thread is rigor without mercy, and curiosity without limits.
-            </p>
-            <div class="rule">
-                "The first rule of Fight Club: you do not skip the details of a proof."
-            </div>
-            <p>
-                New members are always welcome. No background in algebraic geometry is assumed —
-                only the willingness to work hard and to ask "why?" before "how?"
-            </p>
+            <!-- Συμπλήρωσε εδώ την περιγραφή του club -->
+            <blockquote class="about-blockquote">
+                <!-- Συμπλήρωσε εδώ ένα χαρακτηριστικό απόφθεγμα -->
+            </blockquote>
         </div>
-
         <div>
             <ul class="topics-list reveal-stagger">
-                <li><span class="topic-sym">𝒪</span> Algebraic Geometry</li>
-                <li><span class="topic-sym">⊕</span> Commutative Algebra</li>
+                <li><span class="topic-sym">𝒪</span> Αλγεβρική Γεωμετρία</li>
+                <li><span class="topic-sym">⊕</span> Μεταθετική Άλγεβρα</li>
                 <li><span class="topic-sym">K</span> K-Theory</li>
-                <li><span class="topic-sym">ω</span> Kähler Differentials</li>
-                <li><span class="topic-sym">∑</span> Riemann–Roch Theory</li>
-                <li><span class="topic-sym">ℱ</span> Sheaf Theory</li>
-                <li><span class="topic-sym">∂</span> Homological Algebra</li>
+                <li><span class="topic-sym">ω</span> Kähler Διαφορικά</li>
+                <li><span class="topic-sym">∑</span> Θεώρημα Riemann–Roch</li>
+                <li><span class="topic-sym">ℱ</span> Θεωρία Δεμάτων</li>
+                <li><span class="topic-sym">∂</span> Ομολογική Άλγεβρα</li>
             </ul>
         </div>
     </div>
 </section>
 </div>
 
-<!-- ══════════════════════════════════════════
-     ANNOUNCEMENTS
-══════════════════════════════════════════ -->
+<!-- ΑΡΧΕΙΟ ΣΥΝΕΔΡΙΩΝ -->
+<div class="section-wrap">
+<section id="sessions">
+    <div class="section-label">§ 02 — Αρχείο Συνεδριών</div>
+    <h2 class="section-title">Τι Καλύψαμε</h2>
+    <p class="section-intro">Χρονολογική καταγραφή των συνεδριών — τι αποδείχτηκε, τι συζητήθηκε, τι μένει ανοιχτό.</p>
+    <div class="timeline reveal">
+
+        <div class="tl-item active">
+            <div class="tl-dot"></div>
+            <div class="tl-date"><!-- Ημερομηνία --></div>
+            <div class="tl-title"><!-- Τίτλος συνεδρίας --></div>
+            <div class="tl-body"><!-- Περιγραφή --></div>
+            <div class="tl-tags">
+                <span class="tl-tag"><!-- Ετικέτα --></span>
+            </div>
+        </div>
+
+        <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-date"><!-- Ημερομηνία --></div>
+            <div class="tl-title"><!-- Τίτλος συνεδρίας --></div>
+            <div class="tl-body"><!-- Περιγραφή --></div>
+            <div class="tl-tags">
+                <span class="tl-tag"><!-- Ετικέτα --></span>
+            </div>
+        </div>
+
+        <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-date"><!-- Ημερομηνία --></div>
+            <div class="tl-title"><!-- Τίτλος συνεδρίας --></div>
+            <div class="tl-body"><!-- Περιγραφή --></div>
+            <div class="tl-tags">
+                <span class="tl-tag"><!-- Ετικέτα --></span>
+            </div>
+        </div>
+
+        <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-date"><!-- Ημερομηνία --></div>
+            <div class="tl-title"><!-- Τίτλος συνεδρίας --></div>
+            <div class="tl-body"><!-- Περιγραφή --></div>
+            <div class="tl-tags">
+                <span class="tl-tag"><!-- Ετικέτα --></span>
+            </div>
+        </div>
+
+        <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-date"><!-- Ημερομηνία --></div>
+            <div class="tl-title"><!-- Τίτλος συνεδρίας --></div>
+            <div class="tl-body"><!-- Περιγραφή --></div>
+            <div class="tl-tags">
+                <span class="tl-tag"><!-- Ετικέτα --></span>
+            </div>
+        </div>
+
+    </div>
+</section>
+</div>
+
+<!-- ΑΝΑΚΟΙΝΩΣΕΙΣ -->
 <div class="section-wrap">
 <section id="announcements">
-    <div class="section-label">§ 02 — Announcements</div>
-    <h2 class="section-title">Latest News</h2>
-    <p class="section-intro">Updates about sessions, schedule changes, and upcoming topics.</p>
-
+    <div class="section-label">§ 03 — Ανακοινώσεις</div>
+    <h2 class="section-title">Τελευταία Νέα</h2>
+    <p class="section-intro">Ενημερώσεις για συνεδρίες, αλλαγές προγράμματος και επερχόμενα θέματα.</p>
     <div class="ann-list reveal-stagger">
 
         <div class="ann-item">
-            <div class="ann-date">06<br>2025</div>
+            <div class="ann-date"><!-- ΜΜ<br>ΕΕΕΕ --></div>
             <div>
-                <div class="ann-title">Fight Club resumes in Autumn 2025</div>
-                <div class="ann-body">
-                    The club will continue in the fall semester of 2025–26. The reading list
-                    for next year is under discussion. Join the Zulip to be notified when sessions
-                    are confirmed.
-                </div>
+                <div class="ann-title"><!-- Τίτλος ανακοίνωσης --></div>
+                <div class="ann-body"><!-- Κείμενο ανακοίνωσης --></div>
             </div>
-            <div class="ann-badge new">New</div>
+            <div class="ann-badge new">Νέο</div>
         </div>
 
         <div class="ann-item">
-            <div class="ann-date">05<br>2025</div>
+            <div class="ann-date"><!-- ΜΜ<br>ΕΕΕΕ --></div>
             <div>
-                <div class="ann-title">Spring semester wrap-up</div>
-                <div class="ann-body">
-                    We completed our study of Kähler differentials, the canonical sheaf,
-                    and the divisor-theoretic framework. The semester closed with a complete
-                    proof of the Riemann–Roch theorem for algebraic curves.
-                </div>
+                <div class="ann-title"><!-- Τίτλος ανακοίνωσης --></div>
+                <div class="ann-body"><!-- Κείμενο ανακοίνωσης --></div>
             </div>
-            <div class="ann-badge">Archive</div>
+            <div class="ann-badge">Αρχείο</div>
         </div>
 
         <div class="ann-item">
-            <div class="ann-date">10<br>2024</div>
+            <div class="ann-date"><!-- ΜΜ<br>ΕΕΕΕ --></div>
             <div>
-                <div class="ann-title">Inaugural session — Atiyah–Macdonald begins</div>
-                <div class="ann-body">
-                    Fight Club held its first meeting, opening with Chapter 1 of
-                    Atiyah–Macdonald. Ten members attended. The fight had begun.
-                </div>
+                <div class="ann-title"><!-- Τίτλος ανακοίνωσης --></div>
+                <div class="ann-body"><!-- Κείμενο ανακοίνωσης --></div>
             </div>
-            <div class="ann-badge">Archive</div>
+            <div class="ann-badge">Αρχείο</div>
         </div>
 
     </div>
 </section>
 </div>
 
-<!-- ══════════════════════════════════════════
-     BOOKS
-══════════════════════════════════════════ -->
+<!-- ΒΙΒΛΙΑ -->
 <div class="section-wrap">
 <section id="books">
-    <div class="section-label">§ 03 — Reading List</div>
-    <h2 class="section-title">Books We Are Reading</h2>
-    <p class="section-intro">Primary texts and references used in our sessions.</p>
-
+    <div class="section-label">§ 04 — Λίστα Ανάγνωσης</div>
+    <h2 class="section-title">Βιβλία που Διαβάζουμε</h2>
+    <p class="section-intro">Κύρια κείμενα και βιβλία αναφοράς. Κάνε κλικ για να ανοίξεις το PDF στον browser.</p>
     <div class="books-grid reveal-stagger">
 
-        <a class="book-card" href="javascript:void(0)" onclick="openPDF('https://users.math.msu.edu/users/magyarp/Math419H/Fulton-Alg-Curves.pdf')">
+        <a class="book-card linked" href="javascript:void(0)" onclick="openPDF('https://users.math.msu.edu/users/magyarp/Math419H/Fulton-Alg-Curves.pdf')">
             <span class="book-link-badge">↗ PDF</span>
-            <div class="book-cat">Primary Text · Algebraic Geometry</div>
+            <div class="book-cat">Κύριο Κείμενο · Αλγεβρική Γεωμετρία</div>
             <div class="book-title">Algebraic Curves</div>
             <div class="book-author">William Fulton</div>
-            <div class="book-status current"><span class="dot"></span> Currently Reading</div>
+            <div class="book-status current"><span class="dot"></span> Διαβάζουμε Τώρα</div>
         </a>
 
         <div class="book-card">
-            <div class="book-cat">Commutative Algebra</div>
+            <div class="book-cat">Μεταθετική Άλγεβρα</div>
             <div class="book-title">Introduction to Commutative Algebra</div>
             <div class="book-author">Atiyah &amp; Macdonald</div>
-            <div class="book-status current"><span class="dot"></span> Currently Reading</div>
+            <div class="book-status current"><span class="dot"></span> Διαβάζουμε Τώρα</div>
         </div>
 
-        <a class="book-card" href="javascript:void(0)" onclick="openPDF('https://raw.githubusercontent.com/CarlFriedrichGauss1/FightClub/main/Algebraic%20Geometry%20--%20Robin%20Hartshorne%20--%20springer%20graduate%20texts%20in%20mathematics%20%2352%2C%202004%20--%20Springer%20--%20f57784b9a5e973ec15a502811eea5118%20--%20Anna\u2019s%20Archive.pdf')">
+        <a class="book-card linked" href="javascript:void(0)" onclick="openPDF('https://raw.githubusercontent.com/CarlFriedrichGauss1/FightClub/main/Algebraic%20Geometry%20--%20Robin%20Hartshorne%20--%20springer%20graduate%20texts%20in%20mathematics%20%2352%2C%202004%20--%20Springer%20--%20f57784b9a5e973ec15a502811eea5118%20--%20Anna%E2%80%99s%20Archive.pdf')">
             <span class="book-link-badge">↗ PDF</span>
-            <div class="book-cat">Algebraic Geometry</div>
+            <div class="book-cat">Αλγεβρική Γεωμετρία</div>
             <div class="book-title">Algebraic Geometry</div>
             <div class="book-author">Robin Hartshorne</div>
-            <div class="book-status"><span class="dot"></span> Reference</div>
+            <div class="book-status"><span class="dot"></span> Αναφορά</div>
         </a>
 
-        <a class="book-card" href="javascript:void(0)" onclick="openPDF('https://math.stanford.edu/~vakil/216blog/FOAGjul2724public.pdf')">
+        <a class="book-card linked" href="javascript:void(0)" onclick="openPDF('https://math.stanford.edu/~vakil/216blog/FOAGjul2724public.pdf')">
             <span class="book-link-badge">↗ PDF</span>
-            <div class="book-cat">Algebraic Geometry</div>
+            <div class="book-cat">Αλγεβρική Γεωμετρία</div>
             <div class="book-title">The Rising Sea (FOAG)</div>
             <div class="book-author">Ravi Vakil</div>
-            <div class="book-status"><span class="dot"></span> Reference</div>
+            <div class="book-status"><span class="dot"></span> Αναφορά</div>
         </a>
 
-        <a class="book-card" href="javascript:void(0)" onclick="openPDF('https://api.pageplace.de/preview/DT0400.9781107710450_A24418243/preview-9781107710450_A24418243.pdf')">
+        <a class="book-card linked" href="javascript:void(0)" onclick="openPDF('https://api.pageplace.de/preview/DT0400.9781107710450_A24418243/preview-9781107710450_A24418243.pdf')">
             <span class="book-link-badge">↗ PDF</span>
-            <div class="book-cat">Commutative Algebra</div>
+            <div class="book-cat">Μεταθετική Άλγεβρα</div>
             <div class="book-title">Commutative Ring Theory</div>
             <div class="book-author">Hideyuki Matsumura</div>
-            <div class="book-status"><span class="dot"></span> Reference</div>
+            <div class="book-status"><span class="dot"></span> Αναφορά</div>
         </a>
 
-        <a class="book-card" href="javascript:void(0)" onclick="openPDF('https://www.sas.rochester.edu/mth/sites/doug-ravenel/otherpapers/weibel-homv2.pdf')">
+        <a class="book-card linked" href="javascript:void(0)" onclick="openPDF('https://www.sas.rochester.edu/mth/sites/doug-ravenel/otherpapers/weibel-homv2.pdf')">
             <span class="book-link-badge">↗ PDF</span>
-            <div class="book-cat">Homological Algebra</div>
+            <div class="book-cat">Ομολογική Άλγεβρα</div>
             <div class="book-title">An Introduction to Homological Algebra</div>
             <div class="book-author">Charles Weibel</div>
-            <div class="book-status"><span class="dot"></span> Reference</div>
+            <div class="book-status"><span class="dot"></span> Αναφορά</div>
         </a>
 
     </div>
 </section>
 </div>
 
-<!-- ══════════════════════════════════════════
-     EXERCISES
-══════════════════════════════════════════ -->
+<!-- ΑΣΚΗΣΕΙΣ -->
 <div class="section-wrap">
 <section id="exercises">
-    <div class="section-label">§ 04 — Problem Sets</div>
-    <h2 class="section-title">Exercises</h2>
-    <p class="section-intro">
-        Problem sets from our sessions. Click to open in the browser.
-    </p>
-
+    <div class="section-label">§ 05 — Φυλλάδια Ασκήσεων</div>
+    <h2 class="section-title">Ασκήσεις</h2>
+    <p class="section-intro">Τα φυλλάδια ασκήσεων από τις συνεδρίες μας. Κάνε κλικ για να ανοίξεις στον browser.</p>
     <div class="ex-list reveal-stagger">
-
         <a href="javascript:void(0)" class="ex-item" onclick="openPDF('https://raw.githubusercontent.com/CarlFriedrichGauss1/FightClub/main/1o_%CF%80%CE%B1%CE%BA%CE%AD%CF%84%CE%BF_%CE%B1%CF%83%CE%BA%CE%AE%CF%83%CE%B5%CF%89%CE%BD_fight_club.pdf')">
             <div class="ex-num">01</div>
             <div>
                 <div class="ex-title">1ο Πακέτο Ασκήσεων</div>
-                <div class="ex-meta">Fight Club · 1st Problem Set</div>
+                <div class="ex-meta">Fight Club · 1ο Φυλλάδιο</div>
             </div>
             <div class="ex-arrow">→</div>
         </a>
-
         <a href="javascript:void(0)" class="ex-item" onclick="openPDF('https://raw.githubusercontent.com/CarlFriedrichGauss1/FightClub/main/2o_%CF%80%CE%B1%CE%BA%CE%AD%CF%84%CE%BF_%CE%B1%CF%83%CE%BA%CE%AE%CF%83%CE%B5%CF%89%CE%BD_fight_club.pdf')">
             <div class="ex-num">02</div>
             <div>
                 <div class="ex-title">2ο Πακέτο Ασκήσεων</div>
-                <div class="ex-meta">Fight Club · 2nd Problem Set</div>
+                <div class="ex-meta">Fight Club · 2ο Φυλλάδιο</div>
             </div>
             <div class="ex-arrow">→</div>
         </a>
-
         <a href="javascript:void(0)" class="ex-item" onclick="openPDF('https://raw.githubusercontent.com/CarlFriedrichGauss1/FightClub/main/3o_%CF%80%CE%B1%CE%BA%CE%AD%CF%84%CE%BF_%CE%B1%CF%83%CE%BA%CE%AE%CF%83%CE%B5%CF%89%CE%BD_fight_club.pdf')">
             <div class="ex-num">03</div>
             <div>
                 <div class="ex-title">3ο Πακέτο Ασκήσεων</div>
-                <div class="ex-meta">Fight Club · 3rd Problem Set</div>
+                <div class="ex-meta">Fight Club · 3ο Φυλλάδιο</div>
             </div>
             <div class="ex-arrow">→</div>
+        </a>
+    </div>
+</section>
+</div>
+
+<!-- ΠΟΡΟΙ -->
+<div class="section-wrap">
+<section id="resources">
+    <div class="section-label">§ 06 — Πόροι</div>
+    <h2 class="section-title">Χρήσιμοι Σύνδεσμοι</h2>
+    <p class="section-intro">Εξωτερικές αναφορές που κάθε μέλος του club πρέπει να γνωρίζει.</p>
+    <div class="resources-grid reveal-stagger">
+
+        <a class="resource-card" href="https://stacks.math.columbia.edu" target="_blank" rel="noopener">
+            <div class="resource-card-top"><span class="resource-cat">Αναφορά</span><span class="resource-arrow">↗</span></div>
+            <div class="resource-title">The Stacks Project</div>
+            <div class="resource-desc"><!-- Συμπλήρωσε περιγραφή --></div>
+        </a>
+
+        <a class="resource-card" href="https://ncatlab.org/nlab/show/HomePage" target="_blank" rel="noopener">
+            <div class="resource-card-top"><span class="resource-cat">Αναφορά</span><span class="resource-arrow">↗</span></div>
+            <div class="resource-title">nLab</div>
+            <div class="resource-desc"><!-- Συμπλήρωσε περιγραφή --></div>
+        </a>
+
+        <a class="resource-card" href="https://kconrad.math.uconn.edu/blurbs/" target="_blank" rel="noopener">
+            <div class="resource-card-top"><span class="resource-cat">Σημειώσεις</span><span class="resource-arrow">↗</span></div>
+            <div class="resource-title">Keith Conrad's Blurbs</div>
+            <div class="resource-desc"><!-- Συμπλήρωσε περιγραφή --></div>
+        </a>
+
+        <a class="resource-card" href="https://math.stanford.edu/~vakil/216blog/FOAGjul2724public.pdf" target="_blank" rel="noopener">
+            <div class="resource-card-top"><span class="resource-cat">Σημειώσεις</span><span class="resource-arrow">↗</span></div>
+            <div class="resource-title">FOAG — Vakil (τελευταία έκδοση)</div>
+            <div class="resource-desc"><!-- Συμπλήρωσε περιγραφή --></div>
+        </a>
+
+        <a class="resource-card" href="https://www.youtube.com/playlist?list=PLdf-6R9PBvqNlmJQJRWtVJEJZWJRtfr7X" target="_blank" rel="noopener">
+            <div class="resource-card-top"><span class="resource-cat">Βίντεο</span><span class="resource-arrow">↗</span></div>
+            <div class="resource-title">Αλγεβρική Γεωμετρία — Borcherds</div>
+            <div class="resource-desc"><!-- Συμπλήρωσε περιγραφή --></div>
+        </a>
+
+        <a class="resource-card" href="https://math.stackexchange.com/questions/tagged/algebraic-geometry" target="_blank" rel="noopener">
+            <div class="resource-card-top"><span class="resource-cat">Κοινότητα</span><span class="resource-arrow">↗</span></div>
+            <div class="resource-title">MSE — Αλγεβρική Γεωμετρία</div>
+            <div class="resource-desc"><!-- Συμπλήρωσε περιγραφή --></div>
         </a>
 
     </div>
 </section>
 </div>
 
-<!-- ══════════════════════════════════════════
-     ZULIP CHAT
-══════════════════════════════════════════ -->
+<!-- ZULIP -->
 <div class="section-wrap">
 <section id="chat">
-    <div class="section-label">§ 05 — Community</div>
-    <h2 class="section-title">Join the Discussion</h2>
-
+    <div class="section-label">§ 07 — Κοινότητα</div>
+    <h2 class="section-title">Γίνε Μέλος</h2>
     <div class="chat-grid">
         <div class="chat-desc reveal">
-            <p>
-                We use <strong>Zulip</strong> as our primary communication platform.
-                Its inline LaTeX rendering makes it ideal for mathematical conversation —
-                no more screenshot equations.
-            </p>
+            <p>Χρησιμοποιούμε το <strong>Zulip</strong> ως κύρια πλατφόρμα επικοινωνίας. Η υποστήριξη inline LaTeX το κάνει ιδανικό για μαθηματικές συνομιλίες.</p>
             <ul class="chat-features">
-                <li>Inline LaTeX with <code>$$\cdot$$</code> syntax</li>
-                <li>Organized threads by session and topic</li>
-                <li>Persistent searchable history</li>
-                <li>Open to all NKUA students</li>
-                <li>Free and open source</li>
+                <li>Inline LaTeX με σύνταξη <code>\( \cdot \)</code></li>
+                <li>Οργανωμένα threads ανά συνεδρία και θέμα</li>
+                <li>Μόνιμο ιστορικό με δυνατότητα αναζήτησης</li>
+                <li>Ανοιχτό σε όλους τους φοιτητές Μαθηματικών ΕΚΠΑ</li>
+                <li>Ελεύθερο και ανοιχτού κώδικα</li>
             </ul>
-            <!-- Replace href with your actual Zulip invite link -->
-            <a href="#" class="btn-gold">→ Join our Zulip</a>
+            <!-- Αντικατέστησε το # με τον πραγματικό σύνδεσμο πρόσκλησης Zulip -->
+            <a href="#" class="btn-gold">→ Είσοδος στο Zulip</a>
         </div>
-
         <div class="chat-terminal reveal">
             <div class="chat-terminal-header">
-                <span class="term-dot r"></span>
-                <span class="term-dot y"></span>
-                <span class="term-dot g"></span>
-                <span class="term-label">fight-club · #algebraic-geometry</span>
+                <span class="term-dot r"></span><span class="term-dot y"></span><span class="term-dot g"></span>
+                <span class="term-label">fight-club · #αλγεβρική-γεωμετρία</span>
             </div>
             <div class="chat-messages">
                 <div class="chat-msg">
-                    <div class="chat-user">Vasilis  ·  15:03</div>
-                    <div class="chat-text">
-                        Does anyone see why \(\Omega_{B/k} \otimes_B k \cong \mathfrak{m}/\mathfrak{m}^2\)
-                        at a nonsingular point?
-                    </div>
+                    <div class="chat-user">Μέλος · 15:03</div>
+                    <div class="chat-text">Γιατί ισχύει \(\Omega_{B/k} \otimes_B k \cong \mathfrak{m}/\mathfrak{m}^2\) σε λείο σημείο;</div>
                 </div>
                 <div class="chat-separator"></div>
                 <div class="chat-msg">
-                    <div class="chat-user">Nikos  ·  15:07</div>
-                    <div class="chat-text">
-                        Yes — use the second exact sequence for Kähler differentials and
-                        then Nakayama. The map \(d\colon \mathfrak{m}/\mathfrak{m}^2 \to \Omega_{B/k}\otimes k\)
-                        is the key.
-                    </div>
+                    <div class="chat-user">Μέλος · 15:07</div>
+                    <div class="chat-text">Χρησιμοποίησε τη δεύτερη ακριβή ακολουθία για Kähler διαφορικά και μετά Nakayama.</div>
                 </div>
                 <div class="chat-separator"></div>
                 <div class="chat-msg">
-                    <div class="chat-user">Dimitra  ·  15:12</div>
-                    <div class="chat-text">
-                        Right. And at a nonsingular point the cotangent space has dimension
-                        \(\dim \mathcal{O}_{P,C} = 1\) for a curve, so it's free of rank 1 over \(k\).
-                    </div>
+                    <div class="chat-user">Μέλος · 15:12</div>
+                    <div class="chat-text">Ακριβώς. Η λειότητα δίνει \(\dim \mathcal{O}_{P,C} = 1\) άρα είναι ελεύθερο τάξης 1 πάνω από \(k\).</div>
                 </div>
             </div>
         </div>
@@ -1195,106 +662,93 @@
 </section>
 </div>
 
-<!-- ══════════════════════════════════════════
-     MEMBERS
-══════════════════════════════════════════ -->
+<!-- BANNER ΕΓΓΡΑΦΗΣ -->
+<div class="join-banner">
+    <div class="join-banner-inner reveal">
+        <div>
+            <h2 class="join-title">Θέλεις να συμμετέχεις το επόμενο έτος;</h2>
+            <p class="join-sub"><!-- Συμπλήρωσε εδώ τις πληροφορίες εγγραφής --></p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:0.75rem;flex-shrink:0;">
+            <a href="#chat" class="btn-primary">→ Είσοδος μέσω Zulip</a>
+            <a href="#sessions" class="btn-outline">Δες τι καλύπτουμε</a>
+        </div>
+    </div>
+</div>
+
+<!-- ΜΕΛΗ -->
 <div class="section-wrap">
 <section id="members">
-    <div class="section-label">§ 06 — Members</div>
-    <h2 class="section-title">Who We Are</h2>
-    <p class="section-intro">
-        The fighters of 2024–25. Add your own name by editing this file.
-    </p>
-
+    <div class="section-label">§ 08 — Μέλη</div>
+    <h2 class="section-title">Οι Μαχητές του 2024–25</h2>
+    <p class="section-intro">Πρόσθεσε τα μέλη επεξεργαζόμενος το <code>index.html</code>.</p>
     <div class="members-grid reveal-stagger">
-        <!-- ↓↓↓ Edit names, initials, and roles to match your actual members ↓↓↓ -->
         <div class="member-card">
-            <div class="member-initial">V</div>
-            <div class="member-name">Vasilis</div>
-            <div class="member-role">Member<br>ΘΜ · Year 3</div>
+            <div class="member-initial"><!-- Αρχικό --></div>
+            <div class="member-name"><!-- Όνομα --></div>
+            <div class="member-role"><!-- Ρόλος --></div>
         </div>
         <div class="member-card">
-            <div class="member-initial">N</div>
-            <div class="member-name">Your Name</div>
-            <div class="member-role">Lead · Organiser</div>
+            <div class="member-initial"><!-- Αρχικό --></div>
+            <div class="member-name"><!-- Όνομα --></div>
+            <div class="member-role"><!-- Ρόλος --></div>
         </div>
         <div class="member-card">
-            <div class="member-initial">?</div>
-            <div class="member-name">Add Member</div>
-            <div class="member-role">Edit index.html</div>
+            <div class="member-initial"><!-- Αρχικό --></div>
+            <div class="member-name"><!-- Όνομα --></div>
+            <div class="member-role"><!-- Ρόλος --></div>
         </div>
         <div class="member-card">
-            <div class="member-initial">?</div>
-            <div class="member-name">Add Member</div>
-            <div class="member-role">Edit index.html</div>
+            <div class="member-initial"><!-- Αρχικό --></div>
+            <div class="member-name"><!-- Όνομα --></div>
+            <div class="member-role"><!-- Ρόλος --></div>
         </div>
     </div>
 </section>
 </div>
 
-<!-- ══════════════════════════════════════════
-     FOOTER
-══════════════════════════════════════════ -->
+<!-- FOOTER -->
 <footer>
-    <div class="footer-left">
-        Fight Club · Department of Mathematics · NKUA<br>
-        Academic Year 2024–25
+    <div>
+        <div class="footer-brand">Fight Club</div>
+        <div class="footer-left">
+            Τμήμα Μαθηματικών · ΕΚΠΑ · Ακαδημαϊκό Έτος 2024–25
+        </div>
     </div>
     <div class="footer-right">
         Hosted free on <a href="https://pages.github.com" target="_blank">GitHub Pages</a>
     </div>
 </footer>
 
-<!-- ══════════════════════════════════════════
-     SCRIPTS
-══════════════════════════════════════════ -->
 <script>
-/* ── Open PDF via Google Docs Viewer ── */
 function openPDF(url) {
     window.open('https://docs.google.com/viewer?url=' + encodeURIComponent(url), '_blank');
 }
-
-/* ── Scroll reveal ── */
 const io = new IntersectionObserver((entries) => {
     entries.forEach(e => {
-        if (e.isIntersecting) {
-            e.target.classList.add('visible');
-            io.unobserve(e.target);
-        }
+        if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
     });
-}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
 document.querySelectorAll('.reveal, .reveal-stagger').forEach(el => io.observe(el));
-
-/* ── Mobile menu (simple toggle) ── */
 function toggleMenu() {
     const links = document.querySelector('.nav-links');
-    const open = links.style.display === 'flex';
-    links.style.display = open ? '' : 'flex';
-    links.style.flexDirection = 'column';
-    links.style.position = 'absolute';
-    links.style.top = '100%';
-    links.style.right = '1.75rem';
-    links.style.background = '#080b0e';
-    links.style.border = '1px solid #1c2530';
-    links.style.padding = '1rem 1.5rem';
-    links.style.gap = '1.25rem';
-    if (open) links.style.display = '';
+    const isOpen = links.style.display === 'flex';
+    Object.assign(links.style, {
+        display: isOpen ? '' : 'flex', flexDirection: 'column',
+        position: 'absolute', top: '100%', right: '1.75rem',
+        background: '#0b1320', border: '1px solid #1e3460',
+        padding: '1rem 1.5rem', gap: '1.25rem'
+    });
+    if (isOpen) links.style.display = '';
 }
-
-/* ── Close mobile menu on link click ── */
 document.querySelectorAll('.nav-links a').forEach(a => {
     a.addEventListener('click', () => {
-        const links = document.querySelector('.nav-links');
-        if (window.innerWidth <= 900) links.style.display = '';
+        if (window.innerWidth <= 960) document.querySelector('.nav-links').style.display = '';
     });
 });
-
-/* ── MathJax typeset after DOM ready ── */
 document.addEventListener('DOMContentLoaded', () => {
     if (window.MathJax) MathJax.typesetPromise();
 });
 </script>
-
 </body>
 </html>
